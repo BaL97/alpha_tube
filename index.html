@@ -6,20 +6,21 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="description" content="">
 		<meta name="author" content="">
+
 	</head>
 
 	<body>
 		<!-- Intestazione della pagina -->
-		<nav class="navbar navbar-expand bg-white">
+		<nav class="navbar navbar-expand bg-white fixed-top pt-0 pb-0 mb-5">
 
 	    	<!-- Logo della pagina -->
-			<button type="button" class="btn btn-outline-primary mb-2 mt-2" href="index.html">
-		        <span style="font-size:30px; line-height:0px;">α</span> AlphaTube
+			<button type="button" class="btn btn-outline-primary mb-1 mt-1" href="index.html">
+		        <span style="font-size:20px; line-height:0px;">α</span> AlphaTube
 			</button>
 	 
 	 		<!-- Barra di ricerca -->
 			<div class="container justify-content-center">
-				<form class="navbar-form mb-2 mt-2" action="/action_page.php" style="width:65%;">	<!-- La action deve essere cambiata -->
+				<form class="navbar-form" action="/action_page.php" style="width:65%;">	<!-- La action deve essere cambiata -->
 					<div class="input-group">
 		    			<input type="text" class="form-control" placeholder="Search">
 		    			<!-- Simbolo della lente -->
@@ -34,8 +35,8 @@
 		</nav>
 
 		<!-- Contenuto della pagina -->
-		<br>
-    	<div class="container">
+		
+    	<div class="container pt-3 mt-5" >
     		<!-- Unica riga della pagina -->
       		<div class="row">
 
@@ -56,81 +57,34 @@
             			</div>	        
                
             			<!-- Fondo -->
-            			<div class="card-footer  text-muted">            
-              				<ul class="nav nav-tabs">              
-                				<li class="nav-item">
-                					<a id="commVid" class="nav-link active" data-toggle="tab" href="#desc">Comments</a>
-                				</li>
-                				<li class="nav-item">
-                 					<a id="lyrVid" class="nav-link" data-toggle="tab" href="#txt">Lyrics</a>
-                 				</li>
-                   				<li id="wikiVid" class="nav-item">
-                     				<a class="nav-link" data-toggle="tab" href="#wiki">Wikipedia</a>
-                    			</li>
-                      		</ul>
+            			<div class="card-footer text-center">            
+              				<ul class="nav nav-tabs" style="font-size:13px;">              
+                				<li class="nav-item col-lg-3 col-sm-6 col-xs-6">
+								
+                					<a id="commVid" class="nav-link active" data-toggle="tab" href="#desc">Remarks</a>
+								</li>
+							<li class="nav-item col-lg-3 col-sm-6 col-xs-6">
+									<a id="lyrVid" class="nav-link" data-toggle="tab" href="#txt">Lyrics</a>
+								</li>
+							<li class="nav-item col-lg-3 col-sm-6 col-xs-6">
+									<a class="nav-link" data-toggle="tab" href="#wiki">Wiki</a>
+								</li>
+							<li class="nav-item col-lg-3 col-sm-6 col-xs-6">
+									<a class="nav-link" data-toggle="tab" href="#info">Info</a>
+								</li>
+							</ul>
             			</div>
           			</div>       
         		</div>         
 
         		<!-- Colonna di destra -->
         		<div class="col-md-5">
-
-          			<!-- Primo riquadro: Info sul video -->
-          			<div class="card mb-4">
-
-          				<!-- Intestazione -->
-                      	<h6 class="card-header text-center">	<!-- Da decidere se tenerla o no nella pagina -->
-                      		|
-          					<a href="#">Info</a>
-	                      	| 
-                      		<a href="#">Buy</a>
-                      		|
-                      		<a href="#">Catalog</a>
-                      		|
-                      		<a href="#">Stats</a>
-                      		|
-                      	</h6>                      
-                      
-                      	<!-- Corpo -->
-             			<div class="card-body">             
-              				<div class="row">	
-
-              					<!-- Colonna di sinistra -->              
-                				<div class="col text-left">              
-                  					<ul class="list-unstyled">                  
-                    					<li>Artist: 
-                      						<a id="artVid" href="#">-</a>
-                    					</li>
-                    					<li>Album: 
-                    						<a id="albVid" href="#">-</a>
-                    					</li>
-                    					<li>Year: 
-                      						<a id="yeVid" href="#">-</a>
-                    					</li>
-                  					</ul>
-                				</div>
-                
-                				<!-- Colonna di destra -->
-	                			<div class="col text-right">
-	                  				<ul class="list-unstyled">
-	                    				<li>Label: 
-	                      					<a id="labVid" href="#">-</a>
-	                    				</li>
-	                    				<li>Youtube Id: 
-	                      					<a id="idVid" href="#">-</a>
-	                    				</li>
-	                  				</ul>	                  
-	                			</div>
-              				</div>
-            			</div>
-          			</div>
-          
-          			<!-- Secondo riquadro: Video consigliati -->          
-          			<div class="card my-4 ">
+          			<!-- Riquadro: Video consigliati -->          
+          			<div class="card">
 
           				<!-- Intestazione -->
             			<h6 class="card-header px-0 text-center">      
-            				<ul class="nav nav-pills" style="font-size:13px;">    
+            				<ul class="nav nav-pills" style="font-size:12px;">    
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
     								<a class="nav-link active" data-toggle="tab" href="#rand">Random</a>
     							</li>
