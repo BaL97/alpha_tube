@@ -10,33 +10,38 @@
 	</head>
 
 	<body>
-		<!-- Intestazione della pagina -->
-		<nav class="navbar navbar-expand bg-white fixed-top pt-0 pb-0 mb-5">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+		  <button type="button" class="btn btn-outline-primary mb-1 mt-1" href="index.html">
+						   <span style="font-size:20px; line-height:0px;">α</span> AlphaTube
+		  			</button>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
 
-	    	<!-- Logo della pagina -->
-			<button type="button" class="btn btn-outline-primary mb-1 mt-1" href="index.html">
-		        <span style="font-size:20px; line-height:0px;">α</span> AlphaTube
-			</button>
-	 
-	 		<!-- Barra di ricerca -->
-			<div class="container justify-content-center">
-				<form class="navbar-form" action="/action_page.php" style="width:65%;">	<!-- La action deve essere cambiata -->
-					<div class="input-group">
-		    			<input type="text" class="form-control" placeholder="Search">
-		    			<!-- Simbolo della lente -->
-		    			<div class="input-group-append">
-		      				<button class="btn btn-primary" type="submit"> 
-		      					<i class="fa fa-search"></i>
-		      				</button>  
-		     			</div>
-		  			</div>
-	  			</form>
-	  		</div>
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item dropdown">
+		          <a class="dropdown-item" href="#middle">Description</a>
+			  </li>
+			  <li>
+		          <a class="dropdown-item" href="#bottom">Team</a>
+		      </li>
+		    </ul>
+	     <form class="form-inline my-2 my-lg-0">
+	       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+	 	<div class="input-group-append">
+	 		<button class="btn btn-primary" type="submit"> 
+	 			<i class="fa fa-search"></i>
+	 		</button>  
+	 	</div>
+	     </form>
+		  </div>
 		</nav>
 
 		<!-- Contenuto della pagina -->
 		
     	<div class="container pt-3 mt-5" >
+			<a id="middle"></a>
     		<!-- Unica riga della pagina -->
       		<div class="row">
 
@@ -161,6 +166,7 @@
 
 		<!-- Fondo della pagina -->
 		<footer class="py-2 bg-light text-center">
+			<a id="bottom"></a>
 			<br><h3>ABOUT US</h3><br>
 			<h5>Authors:</h5>
 			Davide Balestra - davide.balestra2@studio.unibo.it<br>Andrea D'Arpa - andrea.darpa@studio.unibo.it<br>Daniele Polidori - daniele.polidori2@studio.unibo.it<br>Arber -<br><br>
