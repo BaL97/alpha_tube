@@ -10,10 +10,11 @@
 	</head>
 
 	<body>
+		<section id="home">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-		  <button type="button" class="btn btn-outline-primary mb-1 mt-1" href="index.html">
+		  <a href="#home"><button type="button" class="btn btn-outline-primary mb-1 mt-1">
 						   <span style="font-size:20px; line-height:0px;">α</span> AlphaTube
-		  			</button>
+		  			</button></a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
@@ -21,10 +22,10 @@
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item dropdown">
-		          <a class="dropdown-item" href="#middle">Description</a>
+		          <a class="dropdown-item" href="#description">Description</a>
 			  </li>
 			  <li>
-		          <a class="dropdown-item" href="#bottom">Team</a>
+		          <a class="dropdown-item" href="#about">Team</a>
 		      </li>
 		    </ul>
 	     <form class="form-inline my-2 my-lg-0">
@@ -37,11 +38,11 @@
 	     </form>
 		  </div>
 		</nav>
+		</section>
 
 		<!-- Contenuto della pagina -->
 		
     	<div class="container pt-3 mt-5" >
-			<a id="middle"></a>
     		<!-- Unica riga della pagina -->
       		<div class="row">
 
@@ -62,7 +63,7 @@
             			</div>	        
                
             			<!-- Fondo -->
-            			<div class="card-footer text-center">            
+            			<div id="description" class="card-footer text-center">            
               				<ul class="nav nav-tabs" style="font-size:13px;">              
                 				<li class="nav-item col-lg-3 col-sm-6 col-xs-6">
 								
@@ -165,8 +166,7 @@
 		</div>		
 
 		<!-- Fondo della pagina -->
-		<footer class="py-2 bg-light text-center">
-			<a id="bottom"></a>
+		<footer id="about" class="py-2 bg-light text-center">
 			<br><h3>ABOUT US</h3><br>
 			<h5>Authors:</h5>
 			Davide Balestra - davide.balestra2@studio.unibo.it<br>Andrea D'Arpa - andrea.darpa@studio.unibo.it<br>Daniele Polidori - daniele.polidori2@studio.unibo.it<br>Arber -<br><br>
