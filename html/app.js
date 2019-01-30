@@ -5,6 +5,10 @@ var fs = require('fs');
 var google = require('googleapis');
 var morgan = require('morgan');
 var cors = require('cors');
+var jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+const { window } = new JSDOM();
+var $ = require('jquery')(window);
 
 app.use(morgan('timy'));
 app.use(cors()); 
@@ -20,14 +24,35 @@ app.get('/', function(req, res) {
  * Request → site1840.tw.cs.unibo.it/search_videos/$query
  */
 app.get('/search_videos/:query', function(req, res){
-	//see there, log into youtube API with API KEY, then looking for videos with query in request ID
+	/*see there, log into youtube API with API KEY, then looking for videos with query in request ID
 	//obtain json file, then parse it and show in browser app
-	const youtube = google.youtube({
-  		version: 'v3'
-	});	
-	console.log('ok');
+	//const youtube = google.youtube({
+  	//	version: 'v3'
+	});*/	
+	 res.send('Cerca su youtube il video: ' + req.params.query);
 });
 
+/* Load and parse the json file from starter list api*/
+app.get('/starterlist', function(req, res){
+	$.getJSON('http://site1825.tw.cs.unibo.it/video.json', function(data){
+		res.send(data);
+	});
+});
+
+/* Load and parse the json file on fvitali api
+ */
+app.get('/fvitali', function(req, res){
+	$.getJSON('', function(data){
+		res.send(data);
+	});
+	
+	/*fs.readFile(__dirname+'/backend/json/video.json', function(err, fileContents){
+		if(err){throw err;}
+		try {var data = JSON.parse(fileContents);}
+		catch(err){ console.error(err);}
+		res.send(data);
+	});*/
+});   
 
 /* Middleware handling Not found errors*/
 function notFound(req, res, next){
