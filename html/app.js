@@ -20,6 +20,11 @@ app.get('/', function(req, res) {
 	});
 
 
+/*Prova*/
+app.get('/prova', function(req, res) {
+	res.sendFile(path.join(__dirname+'/prova.html'));
+	});
+
 /* Search video on youtube based on search field
  * Request → site1840.tw.cs.unibo.it/search_videos/$query
  */

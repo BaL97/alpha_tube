@@ -6,7 +6,30 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="description" content="">
 		<meta name="author" content="">
-
+		<script type="text/javascript"> 
+		function starter_prova() {
+			jQuery.ajax({
+				type: "GET",
+				url: "http://site1825.tw.cs.unibo.it/video.json",
+				dataType: "json",
+				success: function(res){
+					var s = JSON.stringify(res);
+					//alert(s);
+					var doc = document.getElementById("loadvideos");
+					doc.innerHTML = s;
+				},
+				error: function(){
+					alert('error');}
+				});
+				//Load JSON
+				
+				//http_request = new XMLHttlRequest();
+				//http_request.open('GET', 'http://www.davide.balestra2.tw.cs.unib.it/starterlist', true);
+				//parse JSON
+				//Load JSON into DOM	
+				//alert('hello');
+			}
+		</script>
 	</head>
 
 	<body>
@@ -92,23 +115,23 @@
             			<h6 class="card-header px-0 text-center">      
             				<ul class="nav nav-pills" style="font-size:12px;">
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link active" data-toggle="tab" href="#start">Starter</a>
+    								<a class="nav-link active" href="#start" onclick="starter_prova()">Starter</a>
     							</li>    
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" data-toggle="tab" href="#search">Search</a>
+    								<a class="nav-link" href="#search">Search</a>
     							</li>
     						
 								<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" data-toggle="tab" href="#rand">Random</a>
+    								<a class="nav-link" href="#rand">Random</a>
     							</li>
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" data-toggle="tab" href="#rel">Related</a>
+    								<a class="nav-link" href="#rel">Related</a>
     							</li>
       							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" data-toggle="tab" href="#rec">Recent</a>
+    								<a class="nav-link" href="#rec">Recent</a>
     							</li>
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" data-toggle="tab" href="#fv">Fvitali</a>
+    								<a class="nav-link" href="#fv">Fvitali</a>
     							</li>
       							<li class="nav-item dropdown col-lg-6 col-sm-6 col-xs-4">
     								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#pop">Popularity</a>
@@ -130,7 +153,7 @@
   						</h6>  	
 
   						<!-- Corpo -->				
-			            <div class="card-body">            
+			            <div class="card-body" id="loadvideos">            
             				<div class="row">                     
                					<div class="col-sm-6 mb-4 text-left">
                						<a href="#">
@@ -220,7 +243,7 @@
 			A recommendation system for YouTube.<br> <a href="https://github.com/BaL97/alpha_tube/tree/master" target="_blank">Tech Web Project 2018</a>
 		</footer>  
 	</body>
-  
+ 
  	<!-- Latest compiled and minified CSS (Bootstrap 4 CDN) -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 	<!-- jQuery library (Bootstrap 4 CDN) -->
