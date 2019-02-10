@@ -1,38 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 	<head>
 		<title>AlphaTube</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="description" content="">
 		<meta name="author" content="">
-		<script type="text/javascript"> 
-		function starter_prova() {
+		
+		<!-- to put out --!>
+		
+		<style>
+		.anyClass {
+			height: 400px;
+			overflow-x: scroll;
+			overflow-y: scroll;
+		}		
+		</style>
+		<script type="text/javascript">
+
+		function loadvideo(video){
+			$("#ytplayer").html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+video+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+		}		
+		
+		function PrintJson(j){  
+			var i=0;
+			var api = "'";
+			for(i;i<j.length;i++){
+               			 $("#loadvideos").append('<div class="row">'+'<div class="col-sm-6 mb-4 text-left">'+'<a href="#video" onclick="loadvideo('+ api + j[i].videoID+ api+ ')">'+
+                                                         '<img class="img-fluid" src="http://placehold.it/500x300/">'+
+                                	                 '</a>'+
+                                        	         '</div>'+
+                                         		 '<div class="col-sm-6 mb-4 text-left">'  +
+						  	'<ul style="list-style-type: none;">'+'<li>'+j[i].title +'</li>' + '<li>' + j[i].artist + '</li>' +'<li>'+ j[i].category + '</li>' + '</ul>'+ '</div>'+
+                                       			 '</div>');
+			}
+		}
+
+		function starter(){			
 			jQuery.ajax({
 				type: "GET",
 				url: "http://site1825.tw.cs.unibo.it/video.json",
 				dataType: "json",
 				success: function(res){
-					var s = JSON.stringify(res);
-					//alert(s);
-					var doc = document.getElementById("loadvideos");
-					doc.innerHTML = s;
+					PrintJson(res);
 				},
 				error: function(){
 					alert('error');}
 				});
-				//Load JSON
-				
-				//http_request = new XMLHttlRequest();
-				//http_request.open('GET', 'http://www.davide.balestra2.tw.cs.unib.it/starterlist', true);
-				//parse JSON
-				//Load JSON into DOM	
-				//alert('hello');
 			}
+
 		</script>
+		<!--HERE WE GO--!>
 	</head>
 
-	<body>
+	<body onload="starter()">
 		<section id="home">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
 		  <a href="#home"><button type="button" class="btn btn-outline-primary mb-1 mt-1">
@@ -67,16 +89,16 @@
 		
     	<div class="container pt-3 mt-5" >
     		<!-- Unica riga della pagina -->
-      		<div class="row">
+      		<div class="row">	
 
 		        <!-- Colonna di sinistra -->
 		        <div class="col-md-7 mb-4">		        		          	
 		            <div class="card" style="padding:2px;">
             
 			            <!-- Player Video -->
-			            <div class="container-plyr">
-              				<div id="player" data-plyr-provider="youtube" data-plyr-embed-id="bTqVqk7FSmY"></div>
-						</div>
+			            <div id="ytplayer">
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/JixfzsQWZ8c" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>	
+				    </div>
             			
             			<!-- Corpo -->
             			<div class="card-body">
@@ -107,15 +129,15 @@
         		</div>         
 
         		<!-- Colonna di destra -->
-        		<div class="col-md-5">
-          			<!-- Riquadro: Video consigliati -->          
+          		<div class="col-md-5">	
+			<!-- Riquadro: Video consigliati -->          
           			<div class="card">
 
           				<!-- Intestazione -->
             			<h6 class="card-header px-0 text-center">      
             				<ul class="nav nav-pills" style="font-size:12px;">
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link active" href="#start" onclick="starter_prova()">Starter</a>
+    								<a class="nav-link active" href="#start" onclick="starter()">Starter</a>
     							</li>    
     							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
     								<a class="nav-link" href="#search">Search</a>
@@ -152,44 +174,15 @@
   							</ul>
   						</h6>  	
 
-  						<!-- Corpo -->				
-			            <div class="card-body" id="loadvideos">            
-            				<div class="row">                     
-               					<div class="col-sm-6 mb-4 text-left">
-               						<a href="#">
-               							<img class="img-fluid" src="http://placehold.it/500x300" alt="">
-               						</a>
-              					</div>
-              				</div>
-               				<div class="row">	                    
-               					<div class="col-sm-6 mb-4 text-left">
-               						<a href="#">
-               							<img class="img-fluid" src="http://placehold.it/500x300" alt="">
-               						</a>
-              					</div>
-              				</div>
-            				<div class="row">                     
-               					<div class="col-sm-6 mb-4 text-left">
-               						<a href="#">
-               							<img class="img-fluid" src="http://placehold.it/500x300" alt="">
-               						</a>
-              					</div>	            
-							</div>             		
-             				<div class="row">                    
-               					<div class="col-sm-6 mb-4 text-left">
-               						<a href="#">
-               							<img class="img-fluid" src="http://placehold.it/500x300" alt="">
-               						</a>
-              					</div>
-            				</div>                   
-    					</div>
+ 						<!-- Corpo -->				
+						    <div class="nav nav-pills nav-stacked anyClass" id="loadvideos"></div>            
+						</div>
 					</div>
-				</div>
 			</div>
 		</div>		
-
-		<!-- Fondo della pagina -->
+	<!-- Fondo della pagina -->
 		<footer id="about" class="py-2 bg-light text-center mt-5 ">
+
 			<div class="row ml-5 mr-5 mb-4">
 			  <div class="col-md-3 mb-12 ">
 			    <div class="card h-100">
