@@ -9,6 +9,8 @@ var jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const { window } = new JSDOM();
 var $ = require('jquery')(window);
+var ytApiKey = "AIzaSyA0NwqdqMCpS9JbXNaCYIyjwnrs8diZcU8";
+
 
 app.use(morgan('timy'));
 app.use(cors()); 
@@ -19,11 +21,6 @@ app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname+'/index.html'));
 	});
 
-
-/*Prova*/
-app.get('/prova', function(req, res) {
-	res.sendFile(path.join(__dirname+'/prova.html'));
-	});
 
 /* Search video on youtube based on search field
  * Request → site1840.tw.cs.unibo.it/search_videos/$query
@@ -37,26 +34,12 @@ app.get('/search_videos/:query', function(req, res){
 	 res.send('Cerca su youtube il video: ' + req.params.query);
 });
 
-/* Load and parse the json file from starter list api*/
-app.get('/starterlist', function(req, res){
-	$.getJSON('http://site1825.tw.cs.unibo.it/video.json', function(data){
-		res.send(data);
-	});
-});
-
 /* Load and parse the json file on fvitali api
  */
-app.get('/fvitali', function(req, res){
-	$.getJSON('', function(data){
-		res.send(data);
-	});
-	
-	/*fs.readFile(__dirname+'/backend/json/video.json', function(err, fileContents){
-		if(err){throw err;}
-		try {var data = JSON.parse(fileContents);}
-		catch(err){ console.error(err);}
-		res.send(data);
-	});*/
+app.get('/listvideos/:id', function(req, res){
+	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + req.params.id + "&key=" + ytApiKey, function(data) {
+        res.send(data);
+        });
 });   
 
 /* Middleware handling Not found errors*/
