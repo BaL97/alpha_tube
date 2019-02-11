@@ -3,7 +3,7 @@
 		
 		function loadvideo(video){
 			watching=video;
-			$("#ytplayer").html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+video+'?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+			$("#ytplayer").html('<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/'+video+'?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
 			$.get(site+"listvideos/"+video, function(data){
 				$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');
 				$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>'); 
@@ -16,7 +16,6 @@
 			$("#loadvideos").html('<div class="container">');
 			for(i;i<j.length;i++){
   				$.get(site+"listvideos/"+j[i].videoID, function(data){
-                        	//alert(data.items[0].snippet.title);  
                         	$("#loadvideos").append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
                                 	                 '</a>'+
