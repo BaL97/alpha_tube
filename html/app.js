@@ -22,16 +22,9 @@ app.get('/', function(req, res) {
 	});
 
 
-/* Search video on youtube based on search field
- * Request → site1840.tw.cs.unibo.it/search_videos/$query
- */
-app.get('/search_videos/:query', function(req, res){
-	/*see there, log into youtube API with API KEY, then looking for videos with query in request ID
-	//obtain json file, then parse it and show in browser app
-	//const youtube = google.youtube({
-  	//	version: 'v3'
-	});*/	
-	 res.send('Cerca su youtube il video: ' + req.params.query);
+/* Function to res the js to client */
+app.get('/script.js', function(req, res){
+	res.sendFile(path.join(__dirname+'/script.js'));
 });
 
 /* Load and parse the json file on fvitali api

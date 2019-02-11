@@ -1,10 +1,13 @@
-var watching="ubUdtowLIZo";
+		var watching="ubUdtowLIZo";
 		var site = "http://davide.balestra2.tw.cs.unibo.it/";
-		var siteTmp = "http://site1840.tw.cs.unibo.it/";
 		
 		function loadvideo(video){
 			watching=video;
 			$("#ytplayer").html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+video+'?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+			$.get(site+"listvideos/"+video, function(data){
+				$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');
+				$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>'); 
+                        });
 		}		
 		
 		function printVideos(j){  
@@ -25,7 +28,8 @@ var watching="ubUdtowLIZo";
 				$("#loadvideos").append('</div>');
 		}
 
-		function starter(){			
+		function starter(){
+			loadvideo(watching);			
 			jQuery.ajax({
 				type: "GET",
 				url: "http://site1825.tw.cs.unibo.it/video.json",
@@ -52,4 +56,3 @@ var watching="ubUdtowLIZo";
 					alert('error');}
 				});
 		}
-
