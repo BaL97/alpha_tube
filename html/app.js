@@ -14,6 +14,7 @@ const youtube = google.youtube({
 	version: 'v3',
 	auth: apiKey
 });
+var c = new Array();
 
 app.use(morgan('timy'));
 app.use(cors()); 
@@ -44,7 +45,8 @@ app.get('/ytsearch/:query', function(req, res){
 		part: 'snippet',
 		q: req.params.query,
 		maxResults: 20,
-		type: 'video'}, function(err, ris){
+		type: 'video',
+		videoCategoryId: '10'}, function(err, ris){
 			if (err) console.error('Error: '+err);
 			if (ris) {res.send(ris.data.items);}
 		});
@@ -56,6 +58,7 @@ app.get('/related/:id', function(req, res){
 		part: 'snippet',
 		maxResults: 20,
 		type: 'video',
+		videoCategoryId: '10',
 		relatedToVideoId: req.params.id}, function(err, ris){
 			if(err) console.error('Error: '+err);
 			if(ris) {res.send(ris.data.items);}
@@ -87,6 +90,55 @@ app.get('/getstat/:id', function(req, res){
         	res.send(data.items[0]);
         });
 });
+
+/* Adding videos to absolute cronology */
+app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', function(req, res){
+	var newvideo = {
+		"videoId": req.params.videoId,
+		"timesWatched": req.params.timesWatched,
+		"prevalentReason": req.params.prevalentReason,
+		"lastSelected": req.params.lastSelected
+	}
+        var flag=false;
+        var newcounter;
+        //create new object
+        /*var newvideo = {
+                "videoID": req.params.id,
+                "counter": 1
+        };*/
+        if(req.params.videoId!='default'){
+        if(c.length==0){
+                c.push(newvideo);
+        }
+        else{
+        for(var i in c){
+                if(c[i].videoId==req.params.videoId){
+                        flag=true;
+                        c[i].timesWatched++;
+                        newvideo=c[i];
+                        c.splice(i,1);
+                }
+        }
+        if(flag){
+                if (c.length==0){
+                        c.push(newvideo);}
+                else{
+                i=0;
+                while((flag)&&(i<c.length)){
+                        if(newvideo.timesWatched>=c[i].timesWatched){
+                                c.splice(i, 0, newvideo);
+                                flag=false;
+                        }
+                        i++;
+                }
+                if(flag) {c.push(newvideo);}
+                }
+        }
+        else c.push(newvideo);
+        }}
+        res.send(c);
+});
+
 
 /* Middleware handling not found error*/
 function notFound(req, res, next){

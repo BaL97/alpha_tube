@@ -1,4 +1,4 @@
-var watching="ubUdtowLIZo";
+//var watching="ubUdtowLIZo";
 var site = "http://davide.balestra2.tw.cs.unibo.it/";
 var starter_list;
 var search_list;
@@ -6,96 +6,150 @@ var cronology = new Array();
 var timer;
 var player;
 var added=false;
+var counter=0;
+var recommender='starter';
+
+
+function setRec(rec){
+	recommender=rec;
+}
 
 function onYouTubePlayerAPIReady(){
-        player = new YT.Player('iframe', {
+	player = new YT.Player('iframe', {
                 events: {
                         'onStateChange': onPlayerStateChange
                 }
         });
 }
 
+function deleteHistory(){
+localStorage.removeItem('cronology');
+cronology = [];
+printCronology(cronology, '#rec');
+}
+
 function onPlayerStateChange(event){
         if (event.data==1){
                 timer = setInterval(function(){
                         if(player.getCurrentTime()>=15) {
-                                addToCronology(watching);
+                                if(counter==0){
+					//add to cronology
+					addToCronology(localStorage.getItem('watching'));
+					jQuery.ajaxSetup({async:false});
+					printCronology(cronology, '#rec');
+					jQuery.ajaxSetup({async:true});
+					}
+				counter++;
                         }
                 }, 1000);
         }
 }
-
 		
-		function isInCronology(v){
-			var index = cronology.indexOf(v);
-			if (index!=-1){
-				cronology.splice(index, 1);
-				cronology.unshift(v);
-				return true;
+function isInCronology(v){
+	for (var i=0; i<cronology.length; i++){
+		if (v.videoId==cronology[i].videoId){
+			cronology.splice(i,1);
+			cronology.unshift(v);
+			return true;
 			}
-			else return false;
 		}
-
-		function addToCronology(video){
+		return false;
+}
+		
+function addToCronology(video){
+			var date = new Date();
+			var gmtdate = date.toGMTString();
+			var object = {
+				"videoId": video,
+				"timesWatched": 1,
+				"prevalentReason": recommender,
+				"lastSelected": gmtdate
+			}
 			 /* Managing local cronology*/
-                        if(!isInCronology(video)){
+			if(!localStorage.getItem('cronology'))
+				cronology=[];
+                        if(!isInCronology(object)){
                                 if (cronology.length==20) var a = cronology.pop();
-                        cronology.unshift(video);}
-
+                        	cronology.unshift(object);
+			}
+			localStorage.setItem('cronology', JSON.stringify(cronology));
+			//Add to server cronology
+			$.get(site+"localPop/"+object.videoId+"/"+object.timesWatched+"/"+object.prevalentReason+"/"+object.lastSelected, function(data){
+				printCronology(data, '#LPA');
+			});
 		}
 
 		function loadvideo(video){
-			watching=video;
-			player.loadVideoById(watching);
+			if(localStorage.getItem('cronology')){
+				cronology = JSON.parse(localStorage.getItem('cronology'));
+				jQuery.ajaxSetup({async:false});
+				printCronology(cronology, '#rec');
+				jQuery.ajaxSetup({async:true});
+			}
+			localStorage.setItem('watching', video);
+			//updateWatching(video);
+			counter=0;
+			//watching=video;
+			player.loadVideoById(localStorage.getItem('watching'));
 			$.get(site+"listvideos/"+video, function(data){
 				$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');			//VIDEO TITLE
 				$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>');		//VIDEO DESC 
 				$('#commVid').html('Attendere il caricamento...');		//WAIT FOR COMMENTS...
+				search_wiki(data.items[0].snippet.title);	
 			});
 
 
-			$.get(site+"getstat/"+watching, function(data){
+			$.get(site+"getstat/"+localStorage.getItem('watching'), function(data){
 			$("#info").html('<p>'+'VIEW: '+ data.statistics.viewCount  +'</p>'+'<p>'+'LIKE: '+ data.statistics.likeCount  +'</p>'+'<p>'+'DISLIKE: '+ data.statistics.dislikeCount +'</p>');
 			});
 
 
-			 $.get(site+"getcomments/"+watching, function(data){      		//ASK SERVER FOR COMMENTS TO watching VIDEO
+			 $.get(site+"getcomments/"+localStorage.getItem('watching'), function(data){      		//ASK SERVER FOR COMMENTS TO watching VIDEO
             			$('#commVid').html('');
             			for (i in data){
             				$('#commVid').append('<p><b>' + data[i].snippet.topLevelComment.snippet.authorDisplayName + '</b><br><br>' + data[i].snippet.topLevelComment.snippet.textDisplay + '</p><hr>');
             			}
 			});
+
+			related();
+			fvitali();
 		}		
 		
 
 
-		function printVideos(j){  
-			var i=0;
+		function printVideos(j, section){  
+			var i;
 			var api = "'";			
-			$("#loadvideos").html('<div class="container">');
-			for(i in j){
+			$("#"+section).html('<div class="container">');
+			for(i=0; i<j.length; i++){
   				$.get(site+"listvideos/"+j[i].videoID, function(data){
-                        	$("#loadvideos").append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
+                        	$("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
                                 	                 '</a>'+
                                         	         '</div>'+
                                          		 '<div class="col-md-8">'  +
 						  	'<p>'+data.items[0].snippet.title+'</p>' + '</div>'+'</div>');
-			});               			
+			}); 
 			}
-			$("#loadvideos").append('</div>');
-			i=0;
+			$("#"+section).append('</div>');
 		}
 
 		function starter(){
-			loadvideo(watching);			
+			if(localStorage.getItem('watching'))
+				loadvideo(localStorage.getItem('watching'));
+			else	
+				loadvideo('ubUdtowLIZo');			
+			$.get(site+"localPop/default/1/starter/date", function(data){
+				printCronology(data,'#LPA');
+                        });
+
 			jQuery.ajax({
 				type: "GET",
 				url: "http://site1825.tw.cs.unibo.it/video.json",
 				dataType: "json",
 				success: function(res){
 					starter_list=res;
-					printVideos(starter_list);
+					printVideos(starter_list, 'start');
 				},
 				error: function(){
 					alert('error');}
@@ -103,41 +157,41 @@ function onPlayerStateChange(event){
 			}
 
 		function starterList(){
-			printVideos(starter_list);
+			printVideos(starter_list, 'starter');
 		}
 	
-
 		function fvitali(){
-			var url= "http://site1825.tw.cs.unibo.it/TW/globpop?id="+watching;
+			var url= "http://site1825.tw.cs.unibo.it/TW/globpop?id="+localStorage.getItem('watching');
 			jQuery.ajax({
 				type: "GET",
 				url: url,
 				dataType: "json",
 				success: function(res){
-					printVideos(res.recommended);
+					printVideos(res.recommended, 'fv');
 				},
 				error: function(){
 					alert('error');}
 				});
 		}
 	
-		function printSearch(list){
+		function printSearch(list, section){
 			var i=0;
                         var api = "'";
-                        $("#loadvideos").html('<div class="container">');
+                        $("#"+section).html('<div class="container">');
                         for(i in list){
-                                $("#loadvideos").append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +list[i].id.videoId + api+ ')">'+'<img class="img-fluid" src=" '+ list[i].snippet.thumbnails.medium.url +'">'+
+                                $("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +list[i].id.videoId + api+ ')">'+'<img class="img-fluid" src=" '+ list[i].snippet.thumbnails.medium.url +'">'+
                                                          '</a>'+
                                                          '</div>'+
                                                          '<div class="col-md-8">'  +
                                                         '<p>'+list[i].snippet.title+'</p>' + '</div>'+'</div>');
                         }
-                        $("#loadvideos").append('</div>');
+                        $("#"+section).append('</div>');
                         i=0;
 
 		}
 		
-		function searchVideos(q){
+		function searchVideos(q, section){
+			if(!section) section='search';
 			if(q){
 					jQuery.ajax({
                                 	type: "GET",
@@ -145,7 +199,7 @@ function onPlayerStateChange(event){
                                 	dataType: "json",
                                 	success: function(res){
 						search_list=res;
-						printSearch(search_list);
+						printSearch(search_list, section);
                                 	},
                                		 error: function(){
                                         	alert('error');}
@@ -153,13 +207,13 @@ function onPlayerStateChange(event){
 			}
 		}
 
-		function recent(){
-			var i=0;
+		function printCronology(items, section){
                         var api = "'";
-                        $("#loadvideos").html('<div class="container">');
-                        for(i in cronology){
-                                $.get(site+"listvideos/"+cronology[i], function(data){
-                                $("#loadvideos").append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
+                        $(section).html('<div class="container">');
+			//jQuery.ajaxSetup({async:false});
+			for(i=0; i<items.length; i++){
+                                $.get(site+"listvideos/"+items[i].videoId, function(data){
+                                $(section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
                                                          '</a>'+
                                                          '</div>'+
@@ -167,28 +221,68 @@ function onPlayerStateChange(event){
                                                         '<p>'+data.items[0].snippet.title+'</p>' + '</div>'+'</div>');
                         });
                         }
-                        $("#loadvideos").append('</div>');
-                        i=0;
-
+                        $(section).append('</div>');
+			//jQuery.ajaxSetup({async:true});
 		}
+
 		
 		function rand(){
 	  		var text;
 	  		var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
 	    		text = possible.charAt(Math.floor(Math.random() * possible.length));
-			searchVideos(text);
+			searchVideos(text, 'rand');
 		}
 
 		function related(){
 			jQuery.ajax({
 			type: "GET",
-			url: site+"related/"+watching,
+			url: site+"related/"+localStorage.getItem('watching'),
 			dataType: "json",
 			success: function(res){
-				printSearch(res);
+				printSearch(res, 'rel');
 			},
 			error: function(){
 				alert('error');}
 			});
 		}
 
+
+function search_wiki(str){
+	$('#wikiVid').html("Attendere il caricamento...");
+	$.ajax({
+		url: "https://en.wikipedia.org/w/api.php",
+		method: 'GET',
+		dataType: "jsonp",
+		data: {
+			action : "query",
+			list: "search",
+			srsearch: str,
+			format: "json"
+			},
+		success: function(ris){
+			search_wiki_content(ris.query.search[0].title);
+		},
+		error: function(err){
+			$('#wikiVid').html('No document was founs');
+		}
+	});
+}
+
+function search_wiki_content(titolo_pagina){
+	$.ajax({
+		url: "https://en.wikipedia.org/w/api.php",
+		method: 'GET',
+		dataType: "jsonp",
+		data: {
+			action: "parse",
+			page: titolo_pagina,
+			format: "json"
+		},
+		success: function(ris){
+			$('#wikiVid').html(ris.parse.text['*']);
+		},
+		error: function(err){
+			$('#wikiVid').html('No document was found');
+		}
+	});
+}

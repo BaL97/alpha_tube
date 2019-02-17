@@ -1,8 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 	<head>
 		<title>AlphaTube</title>
+		<link rel="icon" href="https://pngimage.net/wp-content/uploads/2018/05/alfa-png-3.png" type="image/x-icon"/>
+		<link rel="shortcut icon" href="https://pngimage.net/wp-content/uploads/2018/05/alfa-png-3.png" type="image/x-icon"/>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="description" content="">
@@ -20,14 +23,23 @@
 			overflow: scroll;
 		}
 
-		</style>
+		.topnav input[type=text] {
+			 float: right;
+			 padding: 6px;
+ 			 border: 1px;
+ 			 margin-top: 8px;
+ 			 margin-right: 16px;
+ 			 font-size: 17px;
+		}
 
+
+		</style>
 		<script src="https://www.youtube.com/iframe_api"></script>
 		<script type="text/javascript" src="http://davide.balestra2.tw.cs.unibo.it/script.js"></script>
 
 	</head>
 
-	<body onload="starter()">
+	<body onload="starter();" >
 
 	<section id="home">
 			<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -54,16 +66,17 @@
 						</li>
 					</ul>
 
+					 <button type="button" class="btn btn-outline-danger" onClick="deleteHistory()"> Delete History </button>
+
 					<!-- Barra di ricerca -->
-					<div class="form-inline my-2 my-lg-0">
+					<div id="topnav" class="form-inline my-2 my-lg-1">
 						<input id="search_txt" class="form-control mr-sm-2" type="text" placeholder="Search" onkeydown="if (event.keyCode == 13) {$('#search_btn').click()}">
 						<div class="input-group-append">
-							<button id="search_btn" class="btn btn-primary" type="button" onclick="searchVideos($('#search_txt').val())">
+							<button id="search_btn" class="btn btn-primary custom-button" type="button" onclick="searchVideos($('#search_txt').val());">
 								<i class="fa fa-search"></i>
 							</button>
 						</div>
 					</div>
-
 				</div>
 			</nav>
 		</section>	
@@ -133,7 +146,7 @@
 						        </a>
 						      </div>
 						      <div id="collapseFour" class="collapse" data-parent="#accordion">
-						        <div id="" class="card-body otherClass"></div>
+						        <div id="wikiVid" class="card-body otherClass"></div>
 						      </div>
 						    </div>
 							
@@ -157,53 +170,81 @@
         		<!-- Colonna di destra -->
           		<div class="col-md-5">	
 			<!-- Riquadro: Video consigliati -->          
-          			<div class="card">
-
-          				<!-- Intestazione -->
-
-					<h6 class="card-header px-0 text-center">      
-            				<ul class="nav nav-pills" style="font-size:12px;">
-    							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" href="#start" onclick="starterList()">Starter</a>
-    							</li>    
-    							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" href="#search" onclick="printSearch()" >Search</a>
-    							</li>
-							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" href="#rand" onclick="rand()">Random</a>
-    							</li>
-    							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" href="#rel" onclick="related()">Related</a>
-    							</li>
-      							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" href="#rec" onclick="recent()">Recent</a>
-    							</li>
-    							<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
-    								<a class="nav-link" href="#fv" onclick="fvitali()">Fvitali</a>
-    							</li>
-      							<li class="nav-item dropdown col-lg-6 col-sm-6 col-xs-4">
-    								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#pop">Popularity</a>
-								  <ul class="dropdown-menu text-center" style="font-size:12px;">
-								    <li class="pt-2 pb-2"><a href="#">Global relative</a></li>
-								    <li class="pt-2 pb-2"><a href="#">Local relative</a></li>
-								    <li class="pt-2 pb-2"><a href="#">Global absolute</a></li>
-								    <li class="pt-2 pb-2"><a href="#">Local absolute</a></li>
-								  </ul>
-    							</li>
-      							<li class="nav-item dropdown col-lg-6 col-sm-6 col-xs-4">
-    								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#sim">Similarity</a>
-								  <ul class="dropdown-menu text-center" style="font-size:12px;">
-								    <li class="pt-2 pb-2"><a href="#">Artist</a></li>
-								    <li class="pt-2 pb-2"><a href="#">Genre</a></li>
-								  </ul>
-    							</li>
-  							</ul>
-						</h6>  	
-
- 						<!-- Corpo -->				
-						   <div class="nav nav-pills nav-stacked anyClass" id="loadvideos"></div> 
-      
-						</div>
+					<!-- Intestazione Reccomender -->
+					<h6 class="card-header px-0 text-center"> 
+					<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="startbtn">
+					    <a class="nav-link active" data-toggle="pill" href="#start" onclick="setRec('Starter')">Starter</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="searchbtn">
+					    <a class="nav-link target-tab-link" data-toggle="pill" href="#search" onclick="setRec('search')">Search</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="randbtn">
+					    <a class="nav-link" data-toggle="pill" href="#rand" onclick="setRec('random'); rand()">Random</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="relbtn">
+					    <a class="nav-link" data-toggle="pill" href="#rel" onclick="setRec('related'); related()">Related</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="recbtn">
+					    <a class="nav-link" data-toggle="pill" href="#rec" onclick="setRec('video recent')">Recent</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="fvbtn">
+					    <a class="nav-link" data-toggle="pill" href="#fv" onclick="setRec('fvitali'); fvitali()">FVitali</a>
+					  </li>
+					  <li class="nav-item col-lg-6 col-sm-6 col-xs-4" id="popbtn">
+					    <a class="nav-link" data-toggle="pill" href="#pop">Popularity</a>
+					  </li>
+					  <li class="nav-item col-lg-6 col-sm-6 col-xs-4" id="simbtn">
+					    <a class="nav-link" data-toggle="pill" href="#sim">Similarity</a>
+					  </li>
+					  
+					</ul>
+				</h6>
+				
+					<!-- Spazi di Stampa -->
+					<div class="tab-content">
+					  <div class="tab-pane container active anyClass" id="start"></div>
+					  <div class="tab-pane container fade anyClass" id="search"></div>
+					  <div class="tab-pane container fade anyClass" id="rand"></div>
+					  <div class="tab-pane container fade anyClass" id="rel"></div>
+					  <div class="tab-pane container fade anyClass" id="rec"></div>
+					  <div class="tab-pane container fade anyClass" id="fv"></div>
+					  <div class="tab-pane container fade" id="pop">
+						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
+						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4" align="center">
+						    	<a class="nav-link" data-toggle="pill" href="#GPA" onclick="setRec('Global Absolute')">Global Absolute</a>
+						  	</li>
+						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4" align="center">
+						    	<a class="nav-link" data-toggle="pill" href="#LPA" onclick="setRec('Local Absolute')">Local Absolute</a>
+						  	</li>
+						  	<li class="nav-item col-lg-12 col-sm-12 col-xs-4" align="center">
+                                                        <a class="nav-link" data-toggle="pill" href="#LPR" onclick="setRec('Local Relative')">Local Relative</a>
+                                                        </li>
+						</ul>
+						<div class="tab-content">
+						  <div class="tab-pane container fade anyClass" id="LPR"></div>
+						  <div class="tab-pane container fade anyClass" id="GPA"></div>
+						  <div class="tab-pane container fade anyClass" id="LPA"></div>
+					  	</div>
+						
+					  </div>
+					  <div class="tab-pane container fade" id="sim">
+						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
+						 	 <li class="nav-item col-lg-6 col-sm-6 col-xs-4">
+						 		 <a class="nav-link active" data-toggle="pill" href="#genre" >Genre Similarity</a>
+						  	</li>
+						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4">
+						    	<a class="nav-link" data-toggle="pill" href="#artist">Artist Similarity</a>
+						  	</li>
+						  
+						</ul>
+						<div class="tab-content">
+						  <div class="tab-pane container active anyClass" id="genre"></div>
+						  <div class="tab-pane container fade anyClass" id="artist"></div>
+					  	</div>
+					  </div>
+					</div>
+					
 					</div>
 			</div>
 		</div>		
@@ -216,6 +257,23 @@
 			      <h4 class="card-header">Andrea D'Arpa</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
+				<ul>
+					<li>Graphics</li>
+					<li>Front end</li>
+					<li>Back end support</li>
+				</ul>
+				 <p>Recommenders:</p>
+                                <ul>
+                                        <li>Starter</li>
+                                        <li>Random</li>
+                                        <li>Related</li>
+                                        <li>Recent</li>
+                                        <li>FVitali</li>
+                                        <li>Popularity</li>
+                                </ul>
+				<ul>				
+					 <li>Gestione cronologia</li>
+				</ul>
 			      </div>
 			      <div class="card-footer">
 					  Mail: <a href = "mailto: andrea.darpa@studio.unibo.it"> andrea.darpa@studio.unibo.it</a> <br/>
@@ -228,7 +286,24 @@
 			      <h4 class="card-header">Davide Balestra</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
-			      </div>
+			      	<ul>
+					<li>Back-end main developer, server side scripting</li>
+					<li>Client Side scripting</li>
+					<li>API requests support</li>
+				</ul>
+				<p>Recommenders:</p>
+				<ul>
+					<li>Starter</li>
+					<li>Random</li>
+					<li>Related</li>
+					<li>Recent</li>
+					<li>FVitali</li>
+					<li>Popularity</li>
+				</ul>
+				<ul>
+					<li>Gestione cronologia</li>
+				</ul>
+				</div>
 			      <div class="card-footer">
 					 Mail: <a href = "mailto: davide.balestra2@studio.unibo.it">davide.balestra2@studio.unibo.it</a> <br/>
 			         <a href="https://github.com/BaL97" target=”_blank”> GitHub </a>
@@ -240,6 +315,18 @@
 			      <h4 class="card-header">Daniele Polidori</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
+				<ul>
+					<li>Graphics support</li>
+					<li>API requests</li>
+				</ul>
+
+				 <p>Recommenders:</p>
+                                <ul>
+                                        <li>Search</li>
+                                        <li>Similarity</li>
+                                </ul>
+
+				
 			      </div>
 			      <div class="card-footer">
 					 Mail: <a href = "mailto: danielie.polidori2@studio.unibo.it">danielie.polidori2@studio.unibo.it</a> <br/>
@@ -262,6 +349,7 @@
 			</div>
 			A recommendation system for YouTube.<br> <a href="https://github.com/BaL97/alpha_tube/tree/master" target="_blank">Tech Web Project 2018</a>
 		</footer>  
+
 	</body>
  
  	<!-- Latest compiled and minified CSS (Bootstrap 4 CDN) -->
