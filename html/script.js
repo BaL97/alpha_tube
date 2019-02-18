@@ -8,7 +8,7 @@ var player;
 var added=false;
 var counter=0;
 var recommender='starter';
-
+var global_pop = new Array();
 
 function setRec(rec){
 	recommender=rec;
@@ -35,9 +35,7 @@ function onPlayerStateChange(event){
                                 if(counter==0){
 					//add to cronology
 					addToCronology(localStorage.getItem('watching'));
-					jQuery.ajaxSetup({async:false});
 					printCronology(cronology, '#rec');
-					jQuery.ajaxSetup({async:true});
 					}
 				counter++;
                         }
@@ -82,9 +80,7 @@ function addToCronology(video){
 		function loadvideo(video){
 			if(localStorage.getItem('cronology')){
 				cronology = JSON.parse(localStorage.getItem('cronology'));
-				jQuery.ajaxSetup({async:false});
 				printCronology(cronology, '#rec');
-				jQuery.ajaxSetup({async:true});
 			}
 			localStorage.setItem('watching', video);
 			//updateWatching(video);
@@ -110,7 +106,8 @@ function addToCronology(video){
             				$('#commVid').append('<p><b>' + data[i].snippet.topLevelComment.snippet.authorDisplayName + '</b><br><br>' + data[i].snippet.topLevelComment.snippet.textDisplay + '</p><hr>');
             			}
 			});
-
+			//global_pop = [];
+			//globalPopularity();
 			related();
 			fvitali();
 		}		
@@ -210,7 +207,7 @@ function addToCronology(video){
 		function printCronology(items, section){
                         var api = "'";
                         $(section).html('<div class="container">');
-			//jQuery.ajaxSetup({async:false});
+			jQuery.ajaxSetup({async:false});
 			for(i=0; i<items.length; i++){
                                 $.get(site+"listvideos/"+items[i].videoId, function(data){
                                 $(section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
@@ -222,7 +219,7 @@ function addToCronology(video){
                         });
                         }
                         $(section).append('</div>');
-			//jQuery.ajaxSetup({async:true});
+			jQuery.ajaxSetup({async:true});
 		}
 
 		
@@ -286,3 +283,40 @@ function search_wiki_content(titolo_pagina){
 		}
 	});
 }
+
+function isInGlobal(videoId){
+	for(var i in global_pop){
+		if(global_pop[i].videoId==videoId)
+			return true;
+	}
+	return false;
+}
+
+/*function globalPopularity(){
+	var object;
+	var selected;
+	var flag = false;
+	var j = 0;
+	var number = new Array("1828","1838","1839","1846","1847","1831","1827","1848","1849","1851","1823","1863","1834","1904","1862","1905");
+	$.when(
+		//for (var i=0; i<number.length; i++){
+		$.get("http://site"+number[i]+".tw.cs.unibo.it/globpop?id=YYYYY", function(data){
+			while((!flag)&&(j<data.recommended.length)){
+				selected = data.recommended[j];	
+				if (!isInGlobal(selected.videoId)){	
+					object = {
+						"videoId": selected.videoId,
+						"prevalentReason": selected.prevalentReason
+					}
+					global_pop.push(object);
+					flag=true;
+				}
+				j++;
+			}
+			flag=false;
+			j=0;
+		});).then(function (){
+		alert(JSON.stringify(global_pop));
+	});
+
+}*/

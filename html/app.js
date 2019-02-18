@@ -18,6 +18,25 @@ var c = new Array();
 
 app.use(morgan('timy'));
 app.use(cors()); 
+
+function restrictCronology(){
+	var restrict = new Array();
+	var i = 0;
+	while ((i<20)&&(i<c.length)){
+		restrict[i]=c[i];
+		i++;
+	}
+	return restrict;
+}
+
+function mostPopular(rec){
+	for (var i=0; i<c.length; i++){
+		if (c[i].prevalentReason==rec)
+			return c[i];
+	}
+	return null;
+}
+
 /* Main request, load index.html file, identified as
  * Request → site1840.tw.cs.unibo.it/
  */
@@ -136,7 +155,48 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
         }
         else c.push(newvideo);
         }}
-        res.send(c);
+	res.send(restrictCronology())
+        //res.send(c);
+});
+
+app.get('/globpop', function (req,res){
+	//create recommendations
+	var recommender = new Array ();
+        if(mostPopular('search'))
+		recommender.push(mostPopular('search'));
+	if(mostPopular('random'))
+		recommender.push(mostPopular('random')); 
+        if(mostPopular('related'))
+		recommender.push(mostPopular('related'));
+        if(mostPopular('video recent'))
+		recommender.push(mostPopular('video recent'));
+        if(mostPopular('fvitali'))
+		recommender.push(mostPopular('fvitali'));
+        if(mostPopular('Local Absolute'))
+		recommender.push(mostPopular('Local Absolute'));
+        if(mostPopular('Local Relative'))
+		recommender.push(mostPopular('Local Relative'));
+        /*recommender.push(mostPopular('Artist Similarity'));
+	 *recommender.push(mostPopular('Genre Similarity'));
+	*/
+	var data = new Date();
+	var gmt = data.toGMTString();
+        if(recommender.length==0){
+                var nevergonna = {
+                        "videoId": "dQw4w9WgXcQ",
+                        "timesWatched": 10000,
+                        "prevalentReason": "Global Popularity",
+                        "lastSelected": gmt
+                }
+		recommender.push(nevergonna);
+        }
+	var response = {
+		"site": "site1840.tw.cs.unibo.it", 
+		"recommender": req.query.id,
+		"lastWatched": gmt, 
+		"recommended": recommender
+	}
+	res.send(response);
 });
 
 
