@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>AlphaTube</title>
+		<link rel="icon" href="https://pngimage.net/wp-content/uploads/2018/05/alfa-png-3.png" type="image/x-icon"/>
+		<link rel="shortcut icon" href="https://pngimage.net/wp-content/uploads/2018/05/alfa-png-3.png" type="image/x-icon"/>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		
+		<style>
+		.anyClass {
+			height: 400px;
+			overflow-x: scroll;
+			overflow-y: scroll;
+		}
+
+		.otherClass {
+			height: 200px;
+			overflow: scroll;
+		}
+
+		.topnav input[type=text] {
+			float: right;
+			padding: 6px;
+ 			border: 1px;
+ 			margin-top: 8px;
+ 			margin-right: 16px;
+ 			font-size: 17px;
+		}
+
+
+		</style>
+		<script src="https://www.youtube.com/iframe_api"></script>
+		<script type="text/javascript" src="http://davide.balestra2.tw.cs.unibo.it/script.js"></script>
+
+	</head>
+
+	<body onload="starter();" >
+
+	<section id="home">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+
+				<!-- Logo della pagina -->
+				<a href="#home">
+					<button type="button" class="btn btn-outline-primary mb-1 mt-1">
+						<span style="font-size:20px; line-height:0px;">α</span> AlphaTube
+					</button>
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+					<!-- Anchors per spostarsi nella home -->
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item dropdown">
+							<a class="dropdown-item" href="#description">Description</a>
+						</li>
+						<li>
+							<a class="dropdown-item" href="#about">Team</a>
+						</li>
+					</ul>
+
+					 <button type="button" class="btn btn-outline-danger" onClick="deleteHistory()"> Delete History </button>
+
+					<!-- Barra di ricerca -->
+					<div id="topnav" class="form-inline my-2 my-lg-1">
+						<input id="search_txt" class="form-control mr-sm-2" type="text" placeholder="Search" onkeydown="if (event.keyCode == 13) {$('#search_btn').click()}">
+						<div class="input-group-append">
+							<button id="search_btn" class="btn btn-primary custom-button" type="button" onclick="searchVideos($('#search_txt').val());">
+								<i class="fa fa-search"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</section>	
+
+		<!-- Contenuto della pagina -->
+		
+    	<div class="container pt-3 mt-5" >
+    		<!-- Unica riga della pagina -->
+      		<div class="row">	
+
+		        <!-- Colonna di sinistra -->
+		        <div class="col-md-7 mb-4">		        		          	
+		            <div class="card" style="padding:2px;">
+            
+			            <!-- Player Video -->
+			            <div class="embed-responsive embed-responsive-16by9" id="visualizer">
+					<div id="iframe" class="embed-responsive-item"></div>
+				</div>
+            			
+            			<!-- Corpo -->
+            			<div class="card-body">
+              				<div id="titVid" class="card-title"></div>              
+            			</div>	        
+               
+            			<!-- Fondo -->
+			<div class="container">
+						  <div id="accordion">
+						    
+							<div id="description" class="card">
+						      <div class="card-header">
+						        <a class="card-link" data-toggle="collapse" href="#collapseOne">
+						          Description
+						        </a>
+						      </div>
+						      <div id="collapseOne" class="collapse show" data-parent="#accordion">
+						        <div id="descVid" class="card-body otherClass">
+						        </div>
+						      </div>
+						    </div>
+						    <div class="card">
+						      <div class="card-header">
+						        <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">
+								 Remarks
+								 </a>
+						      </div>
+						      <div id="collapseTwo" class="collapse" data-parent="#accordion">
+						        <div id="commVid" class="card-body otherClass">
+						        </div>
+						      </div>
+						    </div>
+						    <div class="card">
+						      <div class="card-header">
+						        <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
+								Lyrics	
+						        </a>
+						      </div>
+						      <div id="collapseThree" class="collapse" data-parent="#accordion">
+						        <div id="lyrVid" class="card-body otherClass">
+						        </div>
+						      </div>
+						    </div>
+						    
+							<div class="card">
+						      <div class="card-header">
+						        <a class="collapsed card-link" data-toggle="collapse" href="#collapseFour">
+						          Wiki
+						        </a>
+						      </div>
+						      <div id="collapseFour" class="collapse" data-parent="#accordion">
+						        <div id="wikiVid" class="card-body otherClass"></div>
+						      </div>
+						    </div>
+							
+						    
+							<div class="card">
+						      <div class="card-header">
+						        <a class="collapsed card-link" data-toggle="collapse" href="#collapseFive">
+						          Info
+						        </a>
+						      </div>
+						      <div id="collapseFive" class="collapse" data-parent="#accordion">
+						        <div id="info" class="card-body otherClass"></div>
+						      </div>
+						    </div>
+		  				  	
+				
+						  </div>
+						</div>
+          			</div>       
+        		</div>      
+        		<!-- Colonna di destra -->
+          		<div class="col-md-5">	
+			<!-- Riquadro: Video consigliati -->          
+					<!-- Intestazione Reccomender -->
+					<h6 class="card-header px-0 text-center"> 
+					<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="startbtn">
+					    <a class="nav-link active" data-toggle="pill" href="#start" onclick="setRec('Starter')">Starter</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="searchbtn">
+					    <a class="nav-link target-tab-link" data-toggle="pill" href="#search" onclick="setRec('search')">Search</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="randbtn">
+					    <a class="nav-link" data-toggle="pill" href="#rand" onclick="setRec('random'); rand()">Random</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="relbtn">
+					    <a class="nav-link" data-toggle="pill" href="#rel" onclick="setRec('related'); related()">Related</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="recbtn">
+					    <a class="nav-link" data-toggle="pill" href="#rec" onclick="setRec('video recent')">Recent</a>
+					  </li>
+					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="fvbtn">
+					    <a class="nav-link" data-toggle="pill" href="#fv" onclick="setRec('fvitali'); fvitali()">FVitali</a>
+					  </li>
+					  <li class="nav-item col-lg-6 col-sm-6 col-xs-4" id="popbtn">
+					    <a class="nav-link" data-toggle="pill" href="#pop">Popularity</a>
+					  </li>
+					  <li class="nav-item col-lg-6 col-sm-6 col-xs-4" id="simbtn">
+					    <a class="nav-link" data-toggle="pill" href="#sim">Similarity</a>
+					  </li>
+					  
+					</ul>
+				</h6>
+				
+					<!-- Spazi di Stampa -->
+					<div class="tab-content">
+					  <div class="tab-pane container active anyClass" id="start"></div>
+					  <div class="tab-pane container fade anyClass" id="search"></div>
+					  <div class="tab-pane container fade anyClass" id="rand"></div>
+					  <div class="tab-pane container fade anyClass" id="rel"></div>
+					  <div class="tab-pane container fade anyClass" id="rec"></div>
+					  <div class="tab-pane container fade anyClass" id="fv"></div>
+					  <div class="tab-pane container fade" id="pop">
+						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
+						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4" align="center">
+						    	<a class="nav-link" data-toggle="pill" href="#GPA" onclick="setRec('Global Absolute')">Global Absolute</a>
+						  	</li>
+						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4" align="center">
+						    	<a class="nav-link" data-toggle="pill" href="#LPA" onclick="setRec('Local Absolute')">Local Absolute</a>
+						  	</li>
+						  	<li class="nav-item col-lg-12 col-sm-12 col-xs-4" align="center">
+                                                        <a class="nav-link" data-toggle="pill" href="#LPR" onclick="setRec('Local Relative')">Local Relative</a>
+                                                        </li>
+						</ul>
+						<div class="tab-content">
+						  <div class="tab-pane container fade anyClass" id="LPR"></div>
+						  <div class="tab-pane container fade anyClass" id="GPA"></div>
+						  <div class="tab-pane container fade anyClass" id="LPA"></div>
+					  	</div>
+						
+					  </div>
+					  <div class="tab-pane container fade" id="sim">
+						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
+						 	 <li class="nav-item col-lg-6 col-sm-6 col-xs-4">
+						 		 <a class="nav-link active" data-toggle="pill" href="#genre" onclick="setRec('Genre Similarity'); genreFind()">Genre Similarity</a>
+						  	</li>
+						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4">
+						    	<a class="nav-link" data-toggle="pill" href="#artist" onclick="setRec('Artist Similarity'); artistSimilarity()">Artist Similarity</a>
+						  	</li>
+						  
+						</ul>
+						<div class="tab-content">
+						  <div class="tab-pane container active anyClass" id="genre"></div>
+						  <div class="tab-pane container fade anyClass" id="artist"></div>
+					  	</div>
+					  </div>
+					</div>
+					
+					</div>
+			</div>
+		</div>		
+	<!-- Fondo della pagina -->
+		<footer id="about" class="py-2 bg-light text-center mt-5 ">
+
+			<div class="row ml-5 mr-5 mb-4">
+			  <div class="col-md-3 mb-12 ">
+			    <div class="card h-100">
+			      <h4 class="card-header">Andrea D'Arpa</h4>
+			      <div class="card-body">
+			        <p class="card-text">TASKS:</p>
+				<ul>
+					<li>Graphics</li>
+					<li>Front end</li>
+					<li>Back end support</li>
+				</ul>
+				 <p>Recommenders:</p>
+                                <ul>
+                                        <li>Starter</li>
+                                        <li>Random</li>
+                                        <li>Related</li>
+                                        <li>Recent</li>
+                                        <li>FVitali</li>
+                                        <li>Popularity</li>
+                                </ul>
+				<ul>				
+					 <li>Gestione cronologia</li>
+				</ul>
+			      </div>
+			      <div class="card-footer">
+					  Mail: <a href = "mailto: andrea.darpa@studio.unibo.it"> andrea.darpa@studio.unibo.it</a> <br/>
+			         <a href="https://github.com/Arpa97" target=”_blank”> GitHub </a>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col-md-3 mb-12">
+			    <div class="card h-100">
+			      <h4 class="card-header">Davide Balestra</h4>
+			      <div class="card-body">
+			        <p class="card-text">TASKS:</p>
+			      	<ul>
+					<li>Back-end main developer, server side scripting</li>
+					<li>Client Side scripting</li>
+					<li>API requests support</li>
+				</ul>
+				<p>Recommenders:</p>
+				<ul>
+					<li>Starter</li>
+					<li>Random</li>
+					<li>Related</li>
+					<li>Recent</li>
+					<li>FVitali</li>
+					<li>Popularity</li>
+				</ul>
+				<ul>
+					<li>Gestione cronologia</li>
+				</ul>
+				</div>
+			      <div class="card-footer">
+					 Mail: <a href = "mailto: davide.balestra2@studio.unibo.it">davide.balestra2@studio.unibo.it</a> <br/>
+			         <a href="https://github.com/BaL97" target=”_blank”> GitHub </a>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col-md-3 mb-12">
+			    <div class="card h-100">
+			      <h4 class="card-header">Daniele Polidori</h4>
+			      <div class="card-body">
+			        <p class="card-text">TASKS:</p>
+				<ul>
+					<li>Graphics support</li>
+					<li>API requests</li>
+				</ul>
+
+				 <p>Recommenders:</p>
+                                <ul>
+                                        <li>Search</li>
+                                        <li>Similarity</li>
+                                </ul>
+
+				
+			      </div>
+			      <div class="card-footer">
+					 Mail: <a href = "mailto: daniele.polidori2@studio.unibo.it">daniele.polidori2@studio.unibo.it</a> <br/>
+			        <a href="https://github.com/danielepolidori"  target=”_blank”> GitHub </a>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col-md-3 mb-12">
+			    <div class="card h-100">
+			      <h4 class="card-header">Arber Sefgjini</h4>
+			      <div class="card-body">
+			        <p class="card-text">TASKS:</p>
+			      </div>
+			      <div class="card-footer">
+					  Mail: <a href = "mailto: arbersefgjini@studio.unibo.it">arbersefgjini@studio.unibo.it</a> <br/>
+			        <a href="#"> GitHub</a>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			A recommendation system for YouTube.<br> <a href="https://github.com/BaL97/alpha_tube/tree/master" target="_blank">Tech Web Project 2018</a>
+		</footer>  
+
+	</body>
+ 
+ 	<!-- Latest compiled and minified CSS (Bootstrap 4 CDN) -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<!-- jQuery library (Bootstrap 4 CDN) -->
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Popper JS (Bootstrap 4 CDN) -->
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  	<!-- Latest compiled JavaScript (Bootstrap 4 CDN) -->
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  	<!-- Icona Search (Lente) -->
+  	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</html>
