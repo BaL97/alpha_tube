@@ -1,5 +1,4 @@
-//var watching="ubUdtowLIZo";
-var site = "http://davide.balestra2.tw.cs.unibo.it/";
+var site = "http://site1840.tw.cs.unibo.it/";
 var starter_list;
 var search_list;
 var cronology = new Array();
@@ -9,6 +8,14 @@ var added=false;
 var counter=0;
 var recommender='starter';
 var global_pop = new Array();
+var h_state = false;
+
+function navHandler(){
+	h_state = true;
+	if(history.state)	loadvideo(history.state);
+}
+
+window.addEventListener("popstate", navHandler, false);
 
 function setRec(rec){
 	recommender=rec;
@@ -23,9 +30,10 @@ function onYouTubePlayerAPIReady(){
 }
 
 function deleteHistory(){
-localStorage.removeItem('cronology');
-cronology = [];
-printCronology(cronology, '#rec');
+	localStorage.setItem('watching', 'ubUdtowLIZo');
+	localStorage.removeItem('cronology');
+	cronology = [];
+	printCronology(cronology, '#rec');
 }
 
 function onPlayerStateChange(event){
@@ -78,6 +86,7 @@ function addToCronology(video){
 		}
 
 		function loadvideo(video){
+			$("#GPA").html('Loading...');
 			if(localStorage.getItem('cronology')){
 				cronology = JSON.parse(localStorage.getItem('cronology'));
 				printCronology(cronology, '#rec');
@@ -85,16 +94,15 @@ function addToCronology(video){
 			localStorage.setItem('watching', video);
 			//updateWatching(video);
 			counter=0;
-			//watching=video;
 			player.loadVideoById(localStorage.getItem('watching'));
+			if(!h_state)	history.pushState(localStorage.getItem('watching'), "");
 			$.get(site+"listvideos/"+video, function(data){
 				$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');			//VIDEO TITLE
 				$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>');		//VIDEO DESC 
 				$('#commVid').html('Attendere il caricamento...');		//WAIT FOR COMMENTS...
 				search_wiki(data.items[0].snippet.title);	
 			});
-
-
+			
 			$.get(site+"getstat/"+localStorage.getItem('watching'), function(data){
 			$("#info").html('<p>'+'VIEW: '+ data.statistics.viewCount  +'</p>'+'<p>'+'LIKE: '+ data.statistics.likeCount  +'</p>'+'<p>'+'DISLIKE: '+ data.statistics.dislikeCount +'</p>');
 			});
@@ -106,10 +114,10 @@ function addToCronology(video){
             				$('#commVid').append('<p><b>' + data[i].snippet.topLevelComment.snippet.authorDisplayName + '</b><br><br>' + data[i].snippet.topLevelComment.snippet.textDisplay + '</p><hr>');
             			}
 			});
-			//global_pop = [];
-			//globalPopularity();
 			related();
 			fvitali();
+			globalPopularity();
+			h_state = false;
 		}		
 		
 
@@ -120,10 +128,9 @@ function addToCronology(video){
 			$("#"+section).html('<div class="container">');
 			for(i=0; i<j.length; i++){
   				$.get(site+"listvideos/"+j[i].videoID, function(data){
-                        	$("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
+                        	$("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
-                                	                 '</a>'+
-                                        	         '</div>'+
+                                	                 '</div>'+
                                          		 '<div class="col-md-8">'  +
 						  	'<p>'+data.items[0].snippet.title+'</p>' + '</div>'+'</div>');
 			}); 
@@ -176,9 +183,7 @@ function addToCronology(video){
                         var api = "'";
                         $("#"+section).html('<div class="container">');
                         for(i in list){
-                                $("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +list[i].id.videoId + api+ ')">'+'<img class="img-fluid" src=" '+ list[i].snippet.thumbnails.medium.url +'">'+
-                                                         '</a>'+
-                                                         '</div>'+
+                                $("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4" onclick="loadvideo('+ api +list[i].id.videoId + api+ ')">'+'<img class="img-fluid" src=" '+ list[i].snippet.thumbnails.medium.url +'">'+'</div>'+
                                                          '<div class="col-md-8">'  +
                                                         '<p>'+list[i].snippet.title+'</p>' + '</div>'+'</div>');
                         }
@@ -210,9 +215,8 @@ function addToCronology(video){
 			jQuery.ajaxSetup({async:false});
 			for(i=0; i<items.length; i++){
                                 $.get(site+"listvideos/"+items[i].videoId, function(data){
-                                $(section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
+                                $(section).append('<div class="row my-1">'+'<div class="col-sm-4" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
-                                                         '</a>'+
                                                          '</div>'+
                                                          '<div class="col-md-8">'  +
                                                         '<p>'+data.items[0].snippet.title+'</p>' + '</div>'+'</div>');
@@ -292,31 +296,86 @@ function isInGlobal(videoId){
 	return false;
 }
 
-/*function globalPopularity(){
-	var object;
-	var selected;
-	var flag = false;
-	var j = 0;
-	var number = new Array("1828","1838","1839","1846","1847","1831","1827","1848","1849","1851","1823","1863","1834","1904","1862","1905");
-	$.when(
-		//for (var i=0; i<number.length; i++){
-		$.get("http://site"+number[i]+".tw.cs.unibo.it/globpop?id=YYYYY", function(data){
-			while((!flag)&&(j<data.recommended.length)){
-				selected = data.recommended[j];	
-				if (!isInGlobal(selected.videoId)){	
-					object = {
-						"videoId": selected.videoId,
-						"prevalentReason": selected.prevalentReason
-					}
-					global_pop.push(object);
-					flag=true;
-				}
-				j++;
+function addToGlobalPop(video){
+	//esclude chi restituisce un json con campi non conformi alle specifiche
+	if(video[0].videoId){
+		var flag = false;
+		while((!flag)&&(video)&&(video.length!=0)){
+			var object = video.shift();
+			if(!isInGlobal(object.videoId)){
+				global_pop.push(object);
+				flag=true;
 			}
-			flag=false;
-			j=0;
-		});).then(function (){
-		alert(JSON.stringify(global_pop));
-	});
+		}
+	}
+}
 
-}*/
+function relativeApiRequest(site){
+	var APIurl = "http://site"+site+".tw.cs.unibo.it/globpop?id="+localStorage.getItem('watching');
+	$.ajax({
+		type: "GET",
+		url: APIurl,
+		success: function(res){
+                        addToGlobalPop(res.recommended);
+                },
+		error: function(err){
+                        console.log('Errore di richiesta API: '+err);
+                }
+	});
+}
+
+function apiRequest(site){
+        var APIurl = "http://site"+site+".tw.cs.unibo.it/globpop?id=YYYYYY";
+        $.ajax({
+                type: "GET",
+                url: APIurl,
+                success: function(res){
+                        addToGlobalPop(res.recommended);
+                },
+                error: function(err){
+                        console.log('Errore di richiesta API: '+err);
+                }
+        });
+}
+
+function fillGlobalPop(){
+	var i = 0;
+	$.get(site+"getCronology", function (data){
+	while((global_pop.length<20)&&(i<data.length)){
+		if(!isInGlobal(data[i].videoId)){
+			global_pop.push(data[i]);
+		}
+		i++;
+	}
+	printCronology(global_pop, '#GPA');
+	});
+}
+
+function globalPopularity(){
+	global_pop = [];
+	$.when(
+                apiRequest('1823'),
+                //apiRequest('1906'), stringa non JSON
+                //apiRequest('1901'), stringa non json
+                apiRequest('1828'),
+                apiRequest('1838'),
+                apiRequest('1839'),
+                apiRequest('1846'),
+                apiRequest('1847'),
+                apiRequest('1831'),
+                apiRequest('1827'),
+                apiRequest('1848'),
+                apiRequest('1849'),
+                apiRequest('1851'),
+                apiRequest('1863'),
+                apiRequest('1834'),
+                apiRequest('1904'),
+                apiRequest('1862'),
+                apiRequest('1905')
+                //apiRequest('1864') STRINGA NON JSON
+		).then(function(){
+			setTimeout(function (){
+				fillGlobalPop();
+			}, 5000);
+		});
+}

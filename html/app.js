@@ -120,11 +120,6 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
 	}
         var flag=false;
         var newcounter;
-        //create new object
-        /*var newvideo = {
-                "videoID": req.params.id,
-                "counter": 1
-        };*/
         if(req.params.videoId!='default'){
         if(c.length==0){
                 c.push(newvideo);
@@ -157,6 +152,10 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
         }}
 	res.send(restrictCronology())
         //res.send(c);
+});
+
+app.get('/getCronology', function(req,res){
+	res.send(c);
 });
 
 app.get('/globpop', function (req,res){
