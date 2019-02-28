@@ -11,6 +11,18 @@
 		<meta name="author" content="">
 		
 		<style>
+
+		.elenco{
+			font-size : 12px;
+			font-spacing :3px;
+	
+		}
+		
+		#about{
+			font:  17px/1.5 Geneva, "Times New Roman", serif;
+	
+		}
+		
 		.anyClass {
 			height: 400px;
 			overflow-x: scroll;
@@ -23,31 +35,18 @@
 		}
 
 		.topnav input[type=text] {
-<<<<<<< HEAD
 			 float: right;
 			 padding: 6px;
  			 border: 1px;
  			 margin-top: 8px;
  			 margin-right: 16px;
  			 font-size: 17px;
-=======
-			float: right;
-			padding: 6px;
- 			border: 1px;
- 			margin-top: 8px;
- 			margin-right: 16px;
- 			font-size: 17px;
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 		}
 
 
 		</style>
 		<script src="https://www.youtube.com/iframe_api"></script>
-<<<<<<< HEAD
 		<script type="text/javascript" src="http://site1840.tw.cs.unibo.it/script.js"></script>
-=======
-		<script type="text/javascript" src="http://davide.balestra2.tw.cs.unibo.it/script.js"></script>
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 
 	</head>
 
@@ -243,17 +242,10 @@
 					  <div class="tab-pane container fade" id="sim">
 						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
 						 	 <li class="nav-item col-lg-6 col-sm-6 col-xs-4">
-<<<<<<< HEAD
-						 		 <a class="nav-link active" data-toggle="pill" href="#genre" onlcick="setRec('Genre Similarity')">Genre Similarity</a>
-						  	</li>
-						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4">
-						    	<a class="nav-link" data-toggle="pill" href="#artist" onclick="setRec('Artist Similarity')">Artist Similarity</a>
-=======
-						 		 <a class="nav-link active" data-toggle="pill" href="#genre" onclick="setRec('Genre Similarity'); genreFind()">Genre Similarity</a>
+						 		 <a class="nav-link active" data-toggle="pill" href="#genre" onclick="setRec('Genre Similarity')">Genre Similarity</a>
 						  	</li>
 						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4">
 						    	<a class="nav-link" data-toggle="pill" href="#artist" onclick="setRec('Artist Similarity'); artistSimilarity()">Artist Similarity</a>
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 						  	</li>
 						  
 						</ul>
@@ -266,8 +258,9 @@
 					
 					</div>
 			</div>
-		</div>		
-	<!-- Fondo della pagina -->
+		</div>	
+	
+		<!-- Fondo della pagina -->
 		<footer id="about" class="py-2 bg-light text-center mt-5 ">
 
 			<div class="row ml-5 mr-5 mb-4">
@@ -276,23 +269,23 @@
 			      <h4 class="card-header">Andrea D'Arpa</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
-				<ul>
-					<li>Graphics</li>
-					<li>Front end</li>
-					<li>Back end support</li>
-				</ul>
+				<div class="elenco">
+					<p>Graphics</p>
+					<p>Front end</p>
+					<p>Back end support</p>
+				</div>
 				 <p>Recommenders:</p>
-                                <ul>
-                                        <li>Starter</li>
-                                        <li>Random</li>
-                                        <li>Related</li>
-                                        <li>Recent</li>
-                                        <li>FVitali</li>
-                                        <li>Popularity</li>
-                                </ul>
-				<ul>				
-					 <li>Gestione cronologia</li>
-				</ul>
+                                <div class="elenco">
+                                        <p>Starter</p>
+                                        <p>Random</p>
+                                        <p>Related</p>
+                                        <p>Recent</p>
+                                        <p>FVitali</p>
+                                        <p>Popularity</p>
+                                </div>
+				<div class="elenco">				
+					 <p>Gestione cronologia</p>
+				</div>
 			      </div>
 			      <div class="card-footer">
 					  Mail: <a href = "mailto: andrea.darpa@studio.unibo.it"> andrea.darpa@studio.unibo.it</a> <br/>
@@ -305,23 +298,23 @@
 			      <h4 class="card-header">Davide Balestra</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
-			      	<ul>
-					<li>Back-end main developer, server side scripting</li>
-					<li>Client Side scripting</li>
-					<li>API requests support</li>
-				</ul>
+			      	<div class="elenco">
+					<p>Back-end main developer, server side scripting</p>
+					<p>Client Side scripting</p>
+					<p>API requests support</p>
+				</div>
 				<p>Recommenders:</p>
-				<ul>
-					<li>Starter</li>
-					<li>Random</li>
-					<li>Related</li>
-					<li>Recent</li>
-					<li>FVitali</li>
-					<li>Popularity</li>
-				</ul>
-				<ul>
-					<li>Gestione cronologia</li>
-				</ul>
+				<div class="elenco">
+					<p>Starter</p>
+					<p>Random</p>
+					<p>Related</p>
+					<p>Recent</p>
+					<p>FVitali</p>
+					<p>Popularity</p>
+				</div>
+				<div class="elenco">
+					<p>Gestione cronologia</p>
+				</div>
 				</div>
 			      <div class="card-footer">
 					 Mail: <a href = "mailto: davide.balestra2@studio.unibo.it">davide.balestra2@studio.unibo.it</a> <br/>
@@ -334,27 +327,22 @@
 			      <h4 class="card-header">Daniele Polidori</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
-				<ul>
-					<li>Graphics support</li>
-					<li>API requests</li>
-				</ul>
+				<div class="elenco">
+					<p>Graphics support</p>
+					<p>API requests</p>
+				</div>
 
 				 <p>Recommenders:</p>
-                                <ul>
-                                        <li>Search</li>
-                                        <li>Similarity</li>
-                                </ul>
+                                <div class="elenco">
+                                        <p>Search</p>
+                                        <p>Similarity</p>
+                                </div>
 
 				
 			      </div>
 			      <div class="card-footer">
-<<<<<<< HEAD
 					 Mail: <a href = "mailto: danielie.polidori2@studio.unibo.it">danielie.polidori2@studio.unibo.it</a> <br/>
-			        <a href="#">GitHub </a>
-=======
-					 Mail: <a href = "mailto: daniele.polidori2@studio.unibo.it">daniele.polidori2@studio.unibo.it</a> <br/>
-			        <a href="https://github.com/danielepolidori"  target=”_blank”> GitHub </a>
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
+			        <a href="https://github.com/danielepolidori" target="_blank"> GitHub </a>
 			      </div>
 			    </div>
 			  </div>
@@ -372,7 +360,7 @@
 			  </div>
 			</div>
 			A recommendation system for YouTube.<br> <a href="https://github.com/BaL97/alpha_tube/tree/master" target="_blank">Tech Web Project 2018</a>
-		</footer>  
+		</footer>
 
 	</body>
  

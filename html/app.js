@@ -56,11 +56,7 @@ app.get('/listvideos/:id', function(req, res){
 	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + req.params.id + "&key=" + apiKey, function(data) {
         res.send(data);
         });
-<<<<<<< HEAD
 }); 
-=======
-});
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 
 /* Youtube Search */
 app.get('/ytsearch/:query', function(req, res){
@@ -124,14 +120,6 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
 	}
         var flag=false;
         var newcounter;
-<<<<<<< HEAD
-=======
-        //create new object
-        /*var newvideo = {
-                "videoID": req.params.id,
-                "counter": 1
-        };*/
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
         if(req.params.videoId!='default'){
         if(c.length==0){
                 c.push(newvideo);
@@ -166,13 +154,10 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
         //res.send(c);
 });
 
-<<<<<<< HEAD
 app.get('/getCronology', function(req,res){
 	res.send(c);
 });
 
-=======
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 app.get('/globpop', function (req,res){
 	//create recommendations
 	var recommender = new Array ();
@@ -213,8 +198,6 @@ app.get('/globpop', function (req,res){
 	res.send(response);
 });
 
-<<<<<<< HEAD
-=======
 /* Chiamata a YouTube per ottenere il genere musicale associato ad un video */
 app.get('/genreFind/:id', function(req, res){
 
@@ -334,7 +317,7 @@ app.get('/genreSim/:gen', function(req, res){
 		}
 	});
 });
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
+
 
 /* Middleware handling not found error*/
 function notFound(req, res, next){
@@ -355,8 +338,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 app.listen(8000);
-<<<<<<< HEAD
 console.log('Running at Port 8000');
-=======
-console.log('Running at Port 8000');
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34

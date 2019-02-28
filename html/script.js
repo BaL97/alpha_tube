@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 var site = "http://site1840.tw.cs.unibo.it/";
-=======
-//var watching="ubUdtowLIZo";
-var site = "http://davide.balestra2.tw.cs.unibo.it/";
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 var starter_list;
 var search_list;
 var cronology = new Array();
@@ -13,8 +8,12 @@ var added=false;
 var counter=0;
 var recommender='starter';
 var global_pop = new Array();
-<<<<<<< HEAD
 var h_state = false;
+var artist = "";
+var track = "";
+var titleParsed = "";
+var titleParsed_weak = "";
+
 
 function navHandler(){
 	h_state = true;
@@ -22,12 +21,6 @@ function navHandler(){
 }
 
 window.addEventListener("popstate", navHandler, false);
-=======
-var artist = "" ;
-var track = "" ;
-var titleParsed = "" ;
-var titleParsed_weak = "" ;
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 
 function setRec(rec){
 	recommender=rec;
@@ -42,16 +35,10 @@ function onYouTubePlayerAPIReady(){
 }
 
 function deleteHistory(){
-<<<<<<< HEAD
 	localStorage.setItem('watching', 'ubUdtowLIZo');
 	localStorage.removeItem('cronology');
 	cronology = [];
 	printCronology(cronology, '#rec');
-=======
-localStorage.removeItem('cronology');
-cronology = [];
-printCronology(cronology, '#rec');
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 }
 
 function onPlayerStateChange(event){
@@ -104,56 +91,31 @@ function addToCronology(video){
 		}
 
 		function loadvideo(video){
-<<<<<<< HEAD
 			$("#GPA").html('Loading...');
-=======
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 			if(localStorage.getItem('cronology')){
 				cronology = JSON.parse(localStorage.getItem('cronology'));
 				printCronology(cronology, '#rec');
 			}
 			localStorage.setItem('watching', video);
-			//updateWatching(video);
 			counter=0;
-<<<<<<< HEAD
 			player.loadVideoById(localStorage.getItem('watching'));
 			if(!h_state)	history.pushState(localStorage.getItem('watching'), "");
-=======
-			//watching=video;
 
-			player.loadVideoById(localStorage.getItem('watching'));
+			artist = "";
+			track = "";
+			titleParsed = "";
+			titleParsed_weak = "";
 
-			// Azzero il contenuto della sezione Info del video
-			$("#info").html('');
-
-			// Azzero le variabili che saranno riusate per la nuova pulizia del titolo
-			artist = "" ;
-			track = "" ;
-			titleParsed = "" ;
-			titleParsed_weak = "" ;
-
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 			$.get(site+"listvideos/"+video, function(data){
 				$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');			//VIDEO TITLE
 				$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>');		//VIDEO DESC 
 				$('#commVid').html('Attendere il caricamento...');		//WAIT FOR COMMENTS...
-<<<<<<< HEAD
+				puliziaTitolo(data.items[0].snippet.title);
 				search_wiki(data.items[0].snippet.title);	
 			});
 			
 			$.get(site+"getstat/"+localStorage.getItem('watching'), function(data){
 			$("#info").html('<p>'+'VIEW: '+ data.statistics.viewCount  +'</p>'+'<p>'+'LIKE: '+ data.statistics.likeCount  +'</p>'+'<p>'+'DISLIKE: '+ data.statistics.dislikeCount +'</p>');
-=======
-
-				puliziaTitolo(data.items[0].snippet.title);
-
-				console.log("fine");
-			});
-
-
-			$.get(site+"getstat/"+localStorage.getItem('watching'), function(data){
-			$("#info").append('<p>'+'VIEW: '+ data.statistics.viewCount  +'</p>'+'<p>'+'LIKE: '+ data.statistics.likeCount  +'</p>'+'<p>'+'DISLIKE: '+ data.statistics.dislikeCount +'</p>');
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 			});
 
 
@@ -163,19 +125,15 @@ function addToCronology(video){
             				$('#commVid').append('<p><b>' + data[i].snippet.topLevelComment.snippet.authorDisplayName + '</b><br><br>' + data[i].snippet.topLevelComment.snippet.textDisplay + '</p><hr>');
             			}
 			});
-<<<<<<< HEAD
 			related();
 			fvitali();
 			globalPopularity();
 			h_state = false;
+			setTimeout(function() {
+				artistSimilarity();
+				genreFind();
+			}, 5000);
 		}		
-=======
-			//global_pop = [];
-			//globalPopularity();
-			related();
-			fvitali();
-		}
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 		
 
 
@@ -185,16 +143,9 @@ function addToCronology(video){
 			$("#"+section).html('<div class="container">');
 			for(i=0; i<j.length; i++){
   				$.get(site+"listvideos/"+j[i].videoID, function(data){
-<<<<<<< HEAD
                         	$("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
                                 	                 '</div>'+
-=======
-                        	$("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
-                                                         '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
-                                	                 '</a>'+
-                                        	         '</div>'+
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
                                          		 '<div class="col-md-8">'  +
 						  	'<p>'+data.items[0].snippet.title+'</p>' + '</div>'+'</div>');
 			}); 
@@ -238,13 +189,12 @@ function addToCronology(video){
 					printVideos(res.recommended, 'fv');
 				},
 				error: function(){
-					alert('error');}
+					console.log('error');}
 				});
 		}
 	
 		function printSearch(list, section){
 			var i=0;
-<<<<<<< HEAD
                         var api = "'";
                         $("#"+section).html('<div class="container">');
                         for(i in list){
@@ -255,21 +205,11 @@ function addToCronology(video){
                         $("#"+section).append('</div>');
                         i=0;
 
-=======
-			var api = "'";
-			$("#"+section).html('<div class="container">');
-			for(i in list){
-				$("#"+section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +list[i].id.videoId + api+ ')">'+'<img class="img-fluid" src=" '+ list[i].snippet.thumbnails.medium.url +'">'+'</a>'+'</div>'+'<div class="col-md-8">' + '<p>'+list[i].snippet.title+'</p>' + '</div>'+'</div>');
-			}
-			$("#"+section).append('</div>');
-			i=0;
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 		}
 		
 		function searchVideos(q, section){
 			if(!section) section='search';
 			if(q){
-<<<<<<< HEAD
 					jQuery.ajax({
                                 	type: "GET",
                                 	url: site+"ytsearch/"+q,
@@ -279,21 +219,8 @@ function addToCronology(video){
 						printSearch(search_list, section);
                                 	},
                                		 error: function(){
-                                        	alert('error');}
+                                        	console.log('error');}
                                	 	});
-=======
-				jQuery.ajax({
-                	type: "GET",
-                	url: site+"ytsearch/"+q,
-                	dataType: "json",
-                	success: function(res){
-						search_list=res;
-						printSearch(search_list, section);
-                	},
-           			error: function(){
-                    	alert('error');}
-           	 	});
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 			}
 		}
 
@@ -303,14 +230,8 @@ function addToCronology(video){
 			jQuery.ajaxSetup({async:false});
 			for(i=0; i<items.length; i++){
                                 $.get(site+"listvideos/"+items[i].videoId, function(data){
-<<<<<<< HEAD
                                 $(section).append('<div class="row my-1">'+'<div class="col-sm-4" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
                                                          '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
-=======
-                                $(section).append('<div class="row my-1">'+'<div class="col-sm-4">'+'<a href="#video" onclick="loadvideo('+ api +data.items[0].id + api+ ')">'+
-                                                         '<img class="img-fluid" src=" '+data.items[0].snippet.thumbnails.medium.url +'">'+
-                                                         '</a>'+
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
                                                          '</div>'+
                                                          '<div class="col-md-8">'  +
                                                         '<p>'+data.items[0].snippet.title+'</p>' + '</div>'+'</div>');
@@ -358,11 +279,7 @@ function search_wiki(str){
 			search_wiki_content(ris.query.search[0].title);
 		},
 		error: function(err){
-<<<<<<< HEAD
 			$('#wikiVid').html('No document was founs');
-=======
-			$('#wikiVid').html('No document was found');
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
 		}
 	});
 }
@@ -394,7 +311,6 @@ function isInGlobal(videoId){
 	return false;
 }
 
-<<<<<<< HEAD
 function addToGlobalPop(video){
 	//esclude chi restituisce un json con campi non conformi alle specifiche
 	if(video[0].videoId){
@@ -478,35 +394,7 @@ function globalPopularity(){
 			}, 5000);
 		});
 }
-=======
-/*function globalPopularity(){
-	var object;
-	var selected;
-	var flag = false;
-	var j = 0;
-	var number = new Array("1828","1838","1839","1846","1847","1831","1827","1848","1849","1851","1823","1863","1834","1904","1862","1905");
-	$.when(
-		//for (var i=0; i<number.length; i++){
-		$.get("http://site"+number[i]+".tw.cs.unibo.it/globpop?id=YYYYY", function(data){
-			while((!flag)&&(j<data.recommended.length)){
-				selected = data.recommended[j];	
-				if (!isInGlobal(selected.videoId)){	
-					object = {
-						"videoId": selected.videoId,
-						"prevalentReason": selected.prevalentReason
-					}
-					global_pop.push(object);
-					flag=true;
-				}
-				j++;
-			}
-			flag=false;
-			j=0;
-		});).then(function (){
-		alert(JSON.stringify(global_pop));
-	});
 
-}*/
 
 /*
 *	Description: Funzione che data una stringa fa il parsing e determina artista e titolo della canzone, se questo è possibile
@@ -748,7 +636,6 @@ function dataCheck(array, index, check){
 }
 
 function artistSimilarity(){
-
 	if(artist != ""){
 
 		$.ajax({
@@ -786,9 +673,7 @@ function artistSimilarity(){
 *	- "code" e' una stringa che identifica un genere di un video YouTube.
 */
 function codeToGenre(code) {
-
 	var genre = '' ;
-
 	switch(code)
 	{
 		case "/m/05fw6t":
@@ -859,7 +744,6 @@ function codeToGenre(code) {
 }
 
 function genreFind(){
-
 	var genreInfo = [] ;
 	var genre = '' ;
 
@@ -890,7 +774,6 @@ function genreFind(){
 }
 
 function genreSimilarity(genre_code){
-
 	$.ajax({
 		url: site + "genreSim/" + genre_code ,
 		method: 'GET',
@@ -915,4 +798,3 @@ function genreSimilarity(genre_code){
 		}
 	});
 }
->>>>>>> 4b2f89533019c5b4f8f6277919cbc06515a48a34
