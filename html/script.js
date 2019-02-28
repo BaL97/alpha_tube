@@ -1,5 +1,5 @@
 //var watching="ubUdtowLIZo";
-var site = "http://davide.balestra2.tw.cs.unibo.it/";
+var site = "http://daniele.polidori2.tw.cs.unibo.it/";
 var starter_list;
 var search_list;
 var cronology = new Array();
@@ -518,7 +518,7 @@ function checkIsTrack(array, index, check){
 function dataCheck(array, index, check){
 
 	// se i dati sono utilizzabili allora viene salvato il tutto
-	if(check.isArtist || check.isTrack){
+	if(check.isArtist ^ check.isTrack){	// '^' corrisponde all'operazione di XOR (true solo se soltanto uno dei due e' true)
 
 		if(check.isArtist){
 
