@@ -623,7 +623,7 @@ function checkIsTrack(array, index, check){
 function dataCheck(array, index, check){
 
 	// se i dati sono utilizzabili allora viene salvato il tutto
-	if(check.isArtist || check.isTrack){
+	if(check.isArtist ^ check.isTrack){
 
 		if(check.isArtist){
 
