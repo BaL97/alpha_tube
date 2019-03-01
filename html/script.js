@@ -6,7 +6,7 @@ var timer;
 var player;
 var added=false;
 var counter=0;
-var recommender='starter';
+var recommender='Starter';
 var global_pop = new Array();
 var global_relative = new Array();
 var h_state = false;
@@ -15,6 +15,9 @@ var track = "";
 var titleParsed = "";
 var titleParsed_weak = "";
 var genre = "";
+
+var popRelLoc = new Array();
+
 
 function navHandler(){
 	h_state = true;
@@ -43,18 +46,96 @@ function deleteHistory(){
 }
 
 function onPlayerStateChange(event){
-        if (event.data==1){
-                timer = setInterval(function(){
-                        if(player.getCurrentTime()>=15) {
-                                if(counter==0){
+	if (event.data==1){
+		timer = setInterval(function(){
+
+			if(player.getCurrentTime()>=15) {
+				if(counter==0){
 					//add to cronology
+				if((cronology)&&(cronology.length>0)){
+					if(cronology[0].videoId != localStorage.getItem('watching')){
+
+						var idPred = cronology[0].videoId ;
+						var idSucc = localStorage.getItem('watching') ;
+
+						var found_idPred = false ;
+						var found_idSucc = false ;
+						var date = new Date();
+						var gmtdate = date.toGMTString();
+
+						for(i in popRelLoc){
+
+							if(popRelLoc[i].id == idPred){
+
+								found_idPred = true ;
+
+								for(j in popRelLoc[i].succ){
+
+									if(popRelLoc[i].succ[j].id == idSucc){
+
+										found_idSucc = true ;
+
+										var incCount = popRelLoc[i].succ[j].count + 1 ;
+										var incElem = popRelLoc[i].succ[j];
+										incElem = {
+															"videoId": idSucc,
+															"timesWatched": incCount,
+															"prevalentReason": recommender,
+															"lastSelected": gmtdate
+														
+														};
+
+										popRelLoc[i].succ.splice(j, 1);
+
+										for(k in popRelLoc[i].succ){
+
+											if((popRelLoc[i].succ[k].count >= incCount) && (incCount >= popRelLoc[i].succ[k+1].count)){
+
+												popRelLoc[i].succ.splice(k+1, 0, incElem);
+											}
+										}
+									}
+								}
+
+								if(!found_idSucc){
+									var newElem_succ =	{
+															"videoId": idSucc,
+															"timesWatched": 1,
+															"prevalentReason": recommender,
+															"lastSelected": gmtdate
+														} ;
+
+									popRelLoc[i].succ.splice(popRelLoc[i].succ.length, 0, newElem_succ);
+								}						
+							}
+						}
+
+						if(!found_idPred){
+
+							var newElem_pred =	{
+													"id": idPred,
+													"succ": [
+																{
+																	"videoId": idSucc,
+																	"timesWatched": 1,
+																	"prevalentReason": recommender,
+																	"lastSelected": gmtdate
+																	
+																}
+															]
+												} ;
+
+							popRelLoc.splice(popRelLoc.length, 0, newElem_pred);
+						}
+					}
+				}
 					addToCronology(localStorage.getItem('watching'));
 					printCronology(cronology, '#rec');
-					}
+				}
 				counter++;
-                        }
-                }, 1000);
-        }
+			}
+		}, 1000);
+	}
 }
 		
 function isInCronology(v){
@@ -92,14 +173,26 @@ function addToCronology(video){
 		}
 
 function loadvideo(video){
+	var foundRelative = false;
 	if(localStorage.getItem('cronology')){
 		cronology = JSON.parse(localStorage.getItem('cronology'));
 		printCronology(cronology, '#rec');
 	}
-	localStorage.setItem('watching', video);
-	counter=0;
-	player.loadVideoById(localStorage.getItem('watching'));
-	if(!h_state)	history.pushState(localStorage.getItem('watching'), "");
+	$.when (
+		localStorage.setItem('watching', video),
+		counter=0,
+		player.loadVideoById(localStorage.getItem('watching')) ).then(function(){
+        		for(i in popRelLoc){
+                		if(localStorage.getItem('watching')==popRelLoc[i].id){
+                        		foundRelative = true;
+					printCronology(popRelLoc[i].succ, '#LPR');
+                		}
+        		}       
+        		if(!foundRelative) 
+        			$('#LPR').html('No videos was found');
+		});
+	if(!h_state)    history.pushState(localStorage.getItem('watching'), "");
+
 	genre="";
 	artist = "";
 	track = "";
