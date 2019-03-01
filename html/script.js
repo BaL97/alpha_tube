@@ -8,12 +8,13 @@ var added=false;
 var counter=0;
 var recommender='starter';
 var global_pop = new Array();
+var global_relative = new Array();
 var h_state = false;
 var artist = "";
 var track = "";
 var titleParsed = "";
 var titleParsed_weak = "";
-
+var genre = "";
 
 function navHandler(){
 	h_state = true;
@@ -90,50 +91,47 @@ function addToCronology(video){
 			});
 		}
 
-		function loadvideo(video){
-			$("#GPA").html('Loading...');
-			if(localStorage.getItem('cronology')){
-				cronology = JSON.parse(localStorage.getItem('cronology'));
-				printCronology(cronology, '#rec');
-			}
-			localStorage.setItem('watching', video);
-			counter=0;
-			player.loadVideoById(localStorage.getItem('watching'));
-			if(!h_state)	history.pushState(localStorage.getItem('watching'), "");
+function loadvideo(video){
+	if(localStorage.getItem('cronology')){
+		cronology = JSON.parse(localStorage.getItem('cronology'));
+		printCronology(cronology, '#rec');
+	}
+	localStorage.setItem('watching', video);
+	counter=0;
+	player.loadVideoById(localStorage.getItem('watching'));
+	if(!h_state)	history.pushState(localStorage.getItem('watching'), "");
+	genre="";
+	artist = "";
+	track = "";
+	titleParsed = "";
+	titleParsed_weak = "";
 
-			artist = "";
-			track = "";
-			titleParsed = "";
-			titleParsed_weak = "";
-
-			$.get(site+"listvideos/"+video, function(data){
-				$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');			//VIDEO TITLE
-				$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>');		//VIDEO DESC 
-				$('#commVid').html('Attendere il caricamento...');		//WAIT FOR COMMENTS...
-				puliziaTitolo(data.items[0].snippet.title);
-				search_wiki(data.items[0].snippet.title);	
-			});
+	$.get(site+"listvideos/"+video, function(data){
+		$("#titVid").html('<h4 id="titVid" class="card-title">'+data.items[0].snippet.title+'</h4>');			//VIDEO TITLE
+		$("#descVid").html('<p id="descVid" class="card-text">'+data.items[0].snippet.description+'</p>');		//VIDEO DESC 
+		$('#commVid').html('Attendere il caricamento...');		//WAIT FOR COMMENTS...
+		$('#info').html('Attendere il caricamento...');
+		puliziaTitolo(data.items[0].snippet.title);
+		search_wiki(data.items[0].snippet.title);	
+	});
 			
-			$.get(site+"getstat/"+localStorage.getItem('watching'), function(data){
-			$("#info").html('<p>'+'VIEW: '+ data.statistics.viewCount  +'</p>'+'<p>'+'LIKE: '+ data.statistics.likeCount  +'</p>'+'<p>'+'DISLIKE: '+ data.statistics.dislikeCount +'</p>');
-			});
+	$.get(site+"getcomments/"+localStorage.getItem('watching'), function(data){      		//ASK SERVER FOR COMMENTS TO watching VIDEO
+        	$('#commVid').html('');
+            	for (i in data){
+            		$('#commVid').append('<p><b>' + data[i].snippet.topLevelComment.snippet.authorDisplayName + '</b><br><br>' + data[i].snippet.topLevelComment.snippet.textDisplay + '</p><hr>');
+            	}
+	});
 
-
-			 $.get(site+"getcomments/"+localStorage.getItem('watching'), function(data){      		//ASK SERVER FOR COMMENTS TO watching VIDEO
-            			$('#commVid').html('');
-            			for (i in data){
-            				$('#commVid').append('<p><b>' + data[i].snippet.topLevelComment.snippet.authorDisplayName + '</b><br><br>' + data[i].snippet.topLevelComment.snippet.textDisplay + '</p><hr>');
-            			}
+	related();
+	fvitali();
+	h_state = false;
+	if(recommender == 'Global Relative')	globalRelative();
+	
+	$.when(artistSimilarity(), genreFind() ).then(function(){ $.get(site+"getstat/"+localStorage.getItem('watching'),function(data){                
+        	$('#info').html('<p>'+'VIEW: '+ data.statistics.viewCount  + '</p>' + '<p>' + 'LIKE: ' + data.statistics.likeCount  + '</p>' + '<p>' + 'DISLIKE: ' + data.statistics.dislikeCount + '</p>' + '<p>' + 'ARTIST: ' + artist + '</p>' + '<p>' + 'GENRE: '+ genre + '</p>'+'<p>'+'TRACK: '+ track + '</p>');
 			});
-			related();
-			fvitali();
-			globalPopularity();
-			h_state = false;
-			setTimeout(function() {
-				artistSimilarity();
-				genreFind();
-			}, 5000);
-		}		
+		});
+}		
 		
 
 
@@ -153,27 +151,27 @@ function addToCronology(video){
 			$("#"+section).append('</div>');
 		}
 
-		function starter(){
-			if(localStorage.getItem('watching'))
-				loadvideo(localStorage.getItem('watching'));
-			else	
-				loadvideo('ubUdtowLIZo');			
-			$.get(site+"localPop/default/1/starter/date", function(data){
-				printCronology(data,'#LPA');
-                        });
+function starter(){
+	if(localStorage.getItem('watching'))
+		loadvideo(localStorage.getItem('watching'));
+	else	
+		loadvideo('ubUdtowLIZo');			
+	$.get(site+"localPop/default/1/starter/date", function(data){
+		printCronology(data,'#LPA');
+        });
 
-			jQuery.ajax({
-				type: "GET",
-				url: "http://site1825.tw.cs.unibo.it/video.json",
-				dataType: "json",
-				success: function(res){
-					starter_list=res;
-					printVideos(starter_list, 'start');
-				},
-				error: function(){
-					alert('error');}
-				});
-			}
+	jQuery.ajax({
+		type: "GET",
+		url: "http://site1825.tw.cs.unibo.it/video.json",
+		dataType: "json",
+		success: function(res){
+			starter_list=res;
+			printVideos(starter_list, 'start');
+		},
+		error: function(){
+			console.log('error');}
+		});
+}
 
 		function starterList(){
 			printVideos(starter_list, 'starter');
@@ -258,7 +256,7 @@ function addToCronology(video){
 				printSearch(res, 'rel');
 			},
 			error: function(){
-				alert('error');}
+				console.log('error');}
 			});
 		}
 
@@ -311,16 +309,21 @@ function isInGlobal(videoId){
 	return false;
 }
 
+function isInRelative(videoId){
+        for(var i in global_relative){
+                if(global_relative[i].videoId==videoId)
+                        return true;
+        }
+        return false;
+}
+
 function addToGlobalPop(video){
 	//esclude chi restituisce un json con campi non conformi alle specifiche
 	if(video[0].videoId){
-		var flag = false;
-		while((!flag)&&(video)&&(video.length!=0)){
+		while((global_pop.length<20)&&(video)&&(video.length!=0)){
 			var object = video.shift();
-			if(!isInGlobal(object.videoId)){
+			if(!isInGlobal(object.videoId))
 				global_pop.push(object);
-				flag=true;
-			}
 		}
 	}
 }
@@ -353,25 +356,11 @@ function apiRequest(site){
         });
 }
 
-function fillGlobalPop(){
-	var i = 0;
-	$.get(site+"getCronology", function (data){
-	while((global_pop.length<20)&&(i<data.length)){
-		if(!isInGlobal(data[i].videoId)){
-			global_pop.push(data[i]);
-		}
-		i++;
-	}
-	printCronology(global_pop, '#GPA');
-	});
-}
-
 function globalPopularity(){
+	$("#GPA").html("Loading...");
 	global_pop = [];
 	$.when(
                 apiRequest('1823'),
-                //apiRequest('1906'), stringa non JSON
-                //apiRequest('1901'), stringa non json
                 apiRequest('1828'),
                 apiRequest('1838'),
                 apiRequest('1839'),
@@ -390,10 +379,64 @@ function globalPopularity(){
                 //apiRequest('1864') STRINGA NON JSON
 		).then(function(){
 			setTimeout(function (){
-				fillGlobalPop();
-			}, 5000);
+				printCronology(global_pop, "#GPA");
+			}, 2000);
 		});
 }
+
+function addToGlobalRelative(video){
+	//esclude chi restituisce un json con campi non conformi alle specifiche
+        if(video[0].videoId){
+                while((global_relative.length<20)&&(video)&&(video.length!=0)){
+                        var object = video.shift();
+                        if(!isInRelative(object.videoId))
+                                global_relative.push(object);
+                }
+        }
+}
+
+function apiRelative(site){
+	var APIurl = "http://site"+site+".tw.cs.unibo.it/globpop?id="+localStorage.getItem('watching');
+	$.ajax({
+                type: "GET",
+                url: APIurl,
+                success: function(res){
+                        addToGlobalRelative(res.recommended);
+                },
+                error: function(err){
+                        console.log('Errore di richiesta API: '+err);
+                }
+        });
+
+}
+
+function globalRelative(){
+	$("#GPR").html("Loading...");
+	global_relative = [];
+	$.when(
+		apiRelative('1823'),
+                apiRelative('1828'),
+                apiRelative('1838'),
+		apiRelative('1839'),
+                apiRelative('1846'),
+                apiRelative('1847'),
+                apiRelative('1831'),
+                apiRelative('1827'),
+                apiRelative('1848'),
+                apiRelative('1849'),
+                apiRelative('1851'),
+                apiRelative('1863'),
+                apiRelative('1834'),
+                apiRelative('1904'),
+                apiRelative('1862'),
+                apiRelative('1905')
+	).then(function(){
+		setTimeout(function(){
+			printCronology(global_relative, "#GPR");
+		}, 2000);
+	});
+}
+
 
 
 /*
@@ -609,9 +652,6 @@ function dataCheck(array, index, check){
 			}
 		}
 
-		$('#info').append("<p>ARTIST: " + artist + "</p>");
-		$('#info').append("<p>TRACK: " + track + "</p>");
-
 		search_wiki(artist);
 	}
 	else if(index < 3){
@@ -628,9 +668,6 @@ function dataCheck(array, index, check){
 	}
 	else{
 
-		$('#info').append("<p>ARTIST: -Not found- </p>");
-		$('#info').append("<p>TRACK: -Not found- </p>");
-
 		$('#wikiVid').html("Sorry! We couldn't find any information about this artist.");
 	}
 }
@@ -638,7 +675,7 @@ function dataCheck(array, index, check){
 function artistSimilarity(){
 	if(artist != ""){
 
-		$.ajax({
+		return $.ajax({
 			url: site + "ytsearch/" + artist ,
 			method: 'GET',
 			dataType: "json",
@@ -745,9 +782,9 @@ function codeToGenre(code) {
 
 function genreFind(){
 	var genreInfo = [] ;
-	var genre = '' ;
+	var gen = '' ;
 
-	$.ajax({
+	return $.ajax({
 		url: site + "genreFind/" + localStorage.getItem('watching') ,
 		method: 'GET',
 		dataType: "json",
@@ -757,13 +794,13 @@ function genreFind(){
 
 			$.each(genreInfo, function(index, object){
 				
-				genre = codeToGenre(object) ;
+				gen = codeToGenre(object) ;
 			});
 
-			if(genre == '')
-				genre = 'Music' ;
-
-			genreSimilarity(genre);
+			if(gen == '')
+				gen = 'Music' ;
+			genre = gen;
+			genreSimilarity(gen);
 		},
 		error: function(err){
 

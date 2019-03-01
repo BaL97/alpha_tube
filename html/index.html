@@ -77,7 +77,7 @@
 						</li>
 					</ul>
 
-					 <button type="button" class="btn btn-outline-danger" onClick="deleteHistory()"> Delete History </button>
+					 <button type="button" class="btn btn-outline-danger" onClick="deleteHistory()"> Delete Recent </button>
 
 					<!-- Barra di ricerca -->
 					<div id="topnav" class="form-inline my-2 my-lg-1">
@@ -138,17 +138,6 @@
 						        </div>
 						      </div>
 						    </div>
-						    <div class="card">
-						      <div class="card-header">
-						        <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
-								Lyrics	
-						        </a>
-						      </div>
-						      <div id="collapseThree" class="collapse" data-parent="#accordion">
-						        <div id="lyrVid" class="card-body otherClass">
-						        </div>
-						      </div>
-						    </div>
 						    
 							<div class="card">
 						      <div class="card-header">
@@ -183,32 +172,44 @@
 			<!-- Riquadro: Video consigliati -->          
 					<!-- Intestazione Reccomender -->
 					<h6 class="card-header px-0 text-center"> 
-					<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
-					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="startbtn">
+					<ul class="nav nav-pills nav nav-pills" style="font-size:11px;">
+					<li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="startbtn">
 					    <a class="nav-link active" data-toggle="pill" href="#start" onclick="setRec('Starter')">Starter</a>
-					  </li>
-					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="searchbtn">
+					</li>
+					<li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="searchbtn">
 					    <a class="nav-link target-tab-link" data-toggle="pill" href="#search" onclick="setRec('search')">Search</a>
-					  </li>
-					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="randbtn">
+					</li>
+					<li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="randbtn">
 					    <a class="nav-link" data-toggle="pill" href="#rand" onclick="setRec('random'); rand()">Random</a>
-					  </li>
-					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="relbtn">
+					</li>
+					<li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="relbtn">
 					    <a class="nav-link" data-toggle="pill" href="#rel" onclick="setRec('related'); related()">Related</a>
-					  </li>
-					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="recbtn">
+					</li>
+					<li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="recbtn">
 					    <a class="nav-link" data-toggle="pill" href="#rec" onclick="setRec('video recent')">Recent</a>
-					  </li>
-					  <li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="fvbtn">
+					</li>  
+					<li class="nav-item col-lg-4 col-sm-6 col-xs-4" id="fvbtn">
 					    <a class="nav-link" data-toggle="pill" href="#fv" onclick="setRec('fvitali'); fvitali()">FVitali</a>
-					  </li>
-					  <li class="nav-item col-lg-6 col-sm-6 col-xs-4" id="popbtn">
-					    <a class="nav-link" data-toggle="pill" href="#pop">Popularity</a>
-					  </li>
-					  <li class="nav-item col-lg-6 col-sm-6 col-xs-4" id="simbtn">
-					    <a class="nav-link" data-toggle="pill" href="#sim">Similarity</a>
-					  </li>
-					  
+					</li>
+				  	<li class="nav-item col-lg-4 col-sm-6 col-xs-4" align="center">
+				    	<a class="nav-link " data-toggle="pill" href="#GPA" onclick="setRec('Global Absolute'); globalPopularity()">Global Absolute</a>
+				  	</li>
+				  	<li class="nav-item col-lg-4 col-sm-6 col-xs-4" align="center">
+				    	<a class="nav-link" data-toggle="pill" href="#LPA" onclick="setRec('Local Absolute')">Local Absolute</a>
+				  	</li>
+				  	<li class="nav-item col-lg-4 col-sm-6 col-xs-4" align="center">
+                    	<a class="nav-link" data-toggle="pill" href="#GPR" onclick="setRec('Global Relative'); globalRelative()">Global Relative</a>
+                    </li>
+				  	<li class="nav-item col-lg-4 col-sm-6 col-xs-4" align="center">
+                    	<a class="nav-link" data-toggle="pill" href="#LPR" onclick="setRec('Local Relative')">Local Relative</a>
+                    </li>
+				 	<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
+				 		<a class="nav-link " data-toggle="pill" href="#genre" onclick="setRec('Genre Similarity')">Genre Similarity</a>
+				  	</li>
+				  	<li class="nav-item col-lg-4 col-sm-6 col-xs-4">
+				    	<a class="nav-link" data-toggle="pill" href="#artist" onclick="setRec('Artist Similarity'); artistSimilarity()">Artist Similarity</a>
+				  	</li>
+					
 					</ul>
 				</h6>
 				
@@ -220,51 +221,25 @@
 					  <div class="tab-pane container fade anyClass" id="rel"></div>
 					  <div class="tab-pane container fade anyClass" id="rec"></div>
 					  <div class="tab-pane container fade anyClass" id="fv"></div>
-					  <div class="tab-pane container fade" id="pop">
-						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
-						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4" align="center">
-						    	<a class="nav-link" data-toggle="pill" href="#GPA" onclick="setRec('Global Absolute')">Global Absolute</a>
-						  	</li>
-						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4" align="center">
-						    	<a class="nav-link" data-toggle="pill" href="#LPA" onclick="setRec('Local Absolute')">Local Absolute</a>
-						  	</li>
-						  	<li class="nav-item col-lg-12 col-sm-12 col-xs-4" align="center">
-                                                        <a class="nav-link" data-toggle="pill" href="#LPR" onclick="setRec('Local Relative')">Local Relative</a>
-                                                        </li>
-						</ul>
-						<div class="tab-content">
-						  <div class="tab-pane container fade anyClass" id="LPR"></div>
-						  <div class="tab-pane container fade anyClass" id="GPA"></div>
-						  <div class="tab-pane container fade anyClass" id="LPA"></div>
-					  	</div>
-						
-					  </div>
-					  <div class="tab-pane container fade" id="sim">
-						<ul class="nav nav-pills nav nav-pills" style="font-size:12px;">
-						 	 <li class="nav-item col-lg-6 col-sm-6 col-xs-4">
-						 		 <a class="nav-link active" data-toggle="pill" href="#genre" onclick="setRec('Genre Similarity')">Genre Similarity</a>
-						  	</li>
-						  	<li class="nav-item col-lg-6 col-sm-6 col-xs-4">
-						    	<a class="nav-link" data-toggle="pill" href="#artist" onclick="setRec('Artist Similarity'); artistSimilarity()">Artist Similarity</a>
-						  	</li>
-						  
-						</ul>
-						<div class="tab-content">
-						  <div class="tab-pane container active anyClass" id="genre"></div>
-						  <div class="tab-pane container fade anyClass" id="artist"></div>
-					  	</div>
-					  </div>
+					  <div class="tab-pane container fade anyClass" id="LPR"></div>
+					  <div class="tab-pane container fade anyClass" id="GPR"></div>
+					  <div class="tab-pane container fade anyClass" id="GPA"></div>
+					  <div class="tab-pane container fade anyClass" id="LPA"></div>					  	
+					  <div class="tab-pane container fade anyClass" id="genre"></div>
+					  <div class="tab-pane container fade anyClass" id="artist"></div>
 					</div>
-					
 					</div>
+				</div>
+			
 			</div>
-		</div>	
+		</div>
+	</div>	
 	
 		<!-- Fondo della pagina -->
 		<footer id="about" class="py-2 bg-light text-center mt-5 ">
-
 			<div class="row ml-5 mr-5 mb-4">
-			  <div class="col-md-3 mb-12 ">
+			  
+			  <div class="col-md-4 mb-12 ">
 			    <div class="card h-100">
 			      <h4 class="card-header">Andrea D'Arpa</h4>
 			      <div class="card-body">
@@ -276,12 +251,9 @@
 				</div>
 				 <p>Recommenders:</p>
                                 <div class="elenco">
-                                        <p>Starter</p>
-                                        <p>Random</p>
-                                        <p>Related</p>
+                                        <p>Starter - Random - Related - FVitali</p>
                                         <p>Recent</p>
-                                        <p>FVitali</p>
-                                        <p>Popularity</p>
+					<p>Popularity: Global Relative - Global Absolute - Local Absolute </p>
                                 </div>
 				<div class="elenco">				
 					 <p>Gestione cronologia</p>
@@ -293,7 +265,8 @@
 			      </div>
 			    </div>
 			  </div>
-			  <div class="col-md-3 mb-12">
+			  
+			  <div class="col-md-4 mb-12">
 			    <div class="card h-100">
 			      <h4 class="card-header">Davide Balestra</h4>
 			      <div class="card-body">
@@ -305,12 +278,9 @@
 				</div>
 				<p>Recommenders:</p>
 				<div class="elenco">
-					<p>Starter</p>
-					<p>Random</p>
-					<p>Related</p>
+					<p>Starter - Random - Related - FVitali</p>
 					<p>Recent</p>
-					<p>FVitali</p>
-					<p>Popularity</p>
+					<p>Popularity: Global Relative - Global Absolute - Local Absolute </p>
 				</div>
 				<div class="elenco">
 					<p>Gestione cronologia</p>
@@ -322,20 +292,23 @@
 			      </div>
 			    </div>
 			  </div>
-			  <div class="col-md-3 mb-12">
+			  
+			  <div class="col-md-4 mb-12">
 			    <div class="card h-100">
 			      <h4 class="card-header">Daniele Polidori</h4>
 			      <div class="card-body">
 			        <p class="card-text">TASKS:</p>
 				<div class="elenco">
-					<p>Graphics support</p>
+					<p>Graphics</p>
+					<p>Front end</p>
 					<p>API requests</p>
 				</div>
 
 				 <p>Recommenders:</p>
                                 <div class="elenco">
                                         <p>Search</p>
-                                        <p>Similarity</p>
+                                        <p>Similarity: Artist - Genre</p>
+					<p>Popularity: Local Relative</p>
                                 </div>
 
 				
@@ -346,19 +319,7 @@
 			      </div>
 			    </div>
 			  </div>
-			  <div class="col-md-3 mb-12">
-			    <div class="card h-100">
-			      <h4 class="card-header">Arber Sefgjini</h4>
-			      <div class="card-body">
-			        <p class="card-text">TASKS:</p>
-			      </div>
-			      <div class="card-footer">
-					  Mail: <a href = "mailto: arbersefgjini@studio.unibo.it">arbersefgjini@studio.unibo.it</a> <br/>
-			        <a href="#"> GitHub</a>
-			      </div>
-			    </div>
-			  </div>
-			</div>
+			 </div>
 			A recommendation system for YouTube.<br> <a href="https://github.com/BaL97/alpha_tube/tree/master" target="_blank">Tech Web Project 2018</a>
 		</footer>
 

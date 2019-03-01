@@ -161,23 +161,30 @@ app.get('/getCronology', function(req,res){
 app.get('/globpop', function (req,res){
 	//create recommendations
 	var recommender = new Array ();
-        if(mostPopular('search'))
-		recommender.push(mostPopular('search'));
-	if(mostPopular('random'))
-		recommender.push(mostPopular('random')); 
-        if(mostPopular('related'))
-		recommender.push(mostPopular('related'));
-        if(mostPopular('video recent'))
-		recommender.push(mostPopular('video recent'));
-        if(mostPopular('fvitali'))
-		recommender.push(mostPopular('fvitali'));
-        if(mostPopular('Local Absolute'))
-		recommender.push(mostPopular('Local Absolute'));
-        if(mostPopular('Local Relative'))
-		recommender.push(mostPopular('Local Relative'));
-        /*recommender.push(mostPopular('Artist Similarity'));
-	 *recommender.push(mostPopular('Genre Similarity'));
-	*/
+        //Absolute Popularity
+	//if(req.query.id=='YYYYYY'){
+		if(mostPopular('search'))
+			recommender.push(mostPopular('search'));
+		if(mostPopular('random'))
+			recommender.push(mostPopular('random')); 
+        	if(mostPopular('related'))
+			recommender.push(mostPopular('related'));
+       		if(mostPopular('video recent'))
+			recommender.push(mostPopular('video recent'));
+        	if(mostPopular('fvitali'))
+			recommender.push(mostPopular('fvitali'));
+        	if(mostPopular('Local Absolute'))
+			recommender.push(mostPopular('Local Absolute'));
+        	if(mostPopular('Local Relative'))
+			recommender.push(mostPopular('Local Relative'));
+		if(mostPopular('Artist Similarity'))
+        		recommender.push(mostPopular('Artist Similarity'));
+		if(mostPopular('Genre Similarity'))
+			recommender.push(mostPopular('Genre Similarity'));
+	//}
+	//Relative Popularity
+	/*else{}*/
+
 	var data = new Date();
 	var gmt = data.toGMTString();
         if(recommender.length==0){
