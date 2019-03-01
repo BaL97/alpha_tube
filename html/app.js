@@ -15,6 +15,7 @@ const youtube = google.youtube({
 	auth: apiKey
 });
 var c = new Array();
+var popRelLoc = new Array();
 
 app.use(morgan('timy'));
 app.use(cors()); 
@@ -162,7 +163,7 @@ app.get('/globpop', function (req,res){
 	//create recommendations
 	var recommender = new Array ();
         //Absolute Popularity
-	//if(req.query.id=='YYYYYY'){
+	if(req.query.id=='YYYYYY'){
 		if(mostPopular('search'))
 			recommender.push(mostPopular('search'));
 		if(mostPopular('random'))
@@ -181,9 +182,22 @@ app.get('/globpop', function (req,res){
         		recommender.push(mostPopular('Artist Similarity'));
 		if(mostPopular('Genre Similarity'))
 			recommender.push(mostPopular('Genre Similarity'));
-	//}
+	}
 	//Relative Popularity
-	/*else{}*/
+	else{
+		var found = false;
+		for (i in popRelLoc){
+			if(req.query.id==popRelLoc[i].id){
+				found = true;
+				res.send(popRelLoc[i].succ);
+			}
+		}
+		if(!found){
+			var empty = new Array();
+			empty = [];
+			res.send(empty);
+		}
+	}
 
 	var data = new Date();
 	var gmt = data.toGMTString();
@@ -203,6 +217,79 @@ app.get('/globpop', function (req,res){
 		"recommended": recommender
 	}
 	res.send(response);
+});
+
+app.get('/addRelative/:idPred/:idSucc/:recommender', function (req, res){
+	var idPred = req.params.idPred;
+	var idSucc = req.params.idSucc;
+	var recommender = req.params.recommender;
+	var found_idPred = false ;
+       	var found_idSucc = false ;
+        var date = new Date();
+        var gmtdate = date.toGMTString();
+	for(i in popRelLoc){
+        	if(popRelLoc[i].id == idPred){
+                	found_idPred = true ;
+                        for(j in popRelLoc[i].succ){
+                        if(popRelLoc[i].succ[j].videoId == idSucc){
+                        	found_idSucc = true ;
+                                var incCount = popRelLoc[i].succ[j].timesWatched + 1 ;
+                                var incElem = {
+                                	"videoId": idSucc,
+                                        "timesWatched": incCount,
+                                        "prevalentReason": recommender,
+                                        "lastSelected": gmtdate
+                                          };
+                                                                                popRelLoc[i].succ.splice(j, 1);
+										var foundVideo = false;
+                                                                                for(k in popRelLoc[i].succ){
+
+                                                                                        if(popRelLoc[i].succ[k].timesWatched <= incCount){
+												foundVideo = true;
+                                                                                                popRelLoc[i].succ.splice(k, 0, incElem);
+                                                                                        }
+                                                                                }
+										if(!foundVideo)
+											popRelLoc[i].succ.push(incElem);
+                                                                        }
+                                                                }
+
+                                                                if(!found_idSucc){
+                                                                        var newElem_succ =      {
+                                                                                                                        "videoId": idSucc,
+                                                                                                                        "timesWatched": 1,
+                                                                                                                        "prevalentReason": recommender,
+                                                                                                                        "lastSelected": gmtdate
+                                                                                                                } ;
+
+                                                                        popRelLoc[i].succ.splice(popRelLoc[i].succ.length, 0, newElem_succ);
+                                                                }
+                                                        }
+                                                }
+
+       if(!found_idPred){
+                                                
+                                                        var newElem_pred =      {
+                                                                                                        "id": idPred,
+                                                                                                        "succ": [
+                                                                                                                                {
+                                                                                                                                        "videoId": idSucc,
+                                                                                                                                        "timesWatched": 1,
+                                                                                                                                        "prevalentReason": recommender,
+                                                                                                                                        "lastSelected": gmtdate
+                                                                                                                                        
+                                                                                                                                }       
+                                                                                                                        ]       
+                                                                                                } ;                     
+                                                                                                
+                                                        popRelLoc.splice(popRelLoc.length, 0, newElem_pred);
+                                                }  
+	res.send("Request Successful");
+
+});
+
+app.get('/getRelatives/:id', function(req, res) {
+	res.send(popRelLoc);
 });
 
 /* Chiamata a YouTube per ottenere il genere musicale associato ad un video */

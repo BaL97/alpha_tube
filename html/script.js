@@ -54,79 +54,11 @@ function onPlayerStateChange(event){
 					//add to cronology
 				if((cronology)&&(cronology.length>0)){
 					if(cronology[0].videoId != localStorage.getItem('watching')){
-
-						var idPred = cronology[0].videoId ;
-						var idSucc = localStorage.getItem('watching') ;
-
-						var found_idPred = false ;
-						var found_idSucc = false ;
-						var date = new Date();
-						var gmtdate = date.toGMTString();
-
-						for(i in popRelLoc){
-
-							if(popRelLoc[i].id == idPred){
-
-								found_idPred = true ;
-
-								for(j in popRelLoc[i].succ){
-
-									if(popRelLoc[i].succ[j].id == idSucc){
-
-										found_idSucc = true ;
-
-										var incCount = popRelLoc[i].succ[j].count + 1 ;
-										var incElem = popRelLoc[i].succ[j];
-										incElem = {
-															"videoId": idSucc,
-															"timesWatched": incCount,
-															"prevalentReason": recommender,
-															"lastSelected": gmtdate
-														
-														};
-
-										popRelLoc[i].succ.splice(j, 1);
-
-										for(k in popRelLoc[i].succ){
-
-											if((popRelLoc[i].succ[k].count >= incCount) && (incCount >= popRelLoc[i].succ[k+1].count)){
-
-												popRelLoc[i].succ.splice(k+1, 0, incElem);
-											}
-										}
-									}
-								}
-
-								if(!found_idSucc){
-									var newElem_succ =	{
-															"videoId": idSucc,
-															"timesWatched": 1,
-															"prevalentReason": recommender,
-															"lastSelected": gmtdate
-														} ;
-
-									popRelLoc[i].succ.splice(popRelLoc[i].succ.length, 0, newElem_succ);
-								}						
-							}
-						}
-
-						if(!found_idPred){
-
-							var newElem_pred =	{
-													"id": idPred,
-													"succ": [
-																{
-																	"videoId": idSucc,
-																	"timesWatched": 1,
-																	"prevalentReason": recommender,
-																	"lastSelected": gmtdate
-																	
-																}
-															]
-												} ;
-
-							popRelLoc.splice(popRelLoc.length, 0, newElem_pred);
-						}
+						var idPred = cronology[0].videoId;
+						var idSucc = localStorage.getItem('watching');
+						$.get(site+"addRelative/"+idPred+"/"+idSucc+"/"+recommender, function(data){
+                                        		console.log(data);
+						});
 					}
 				}
 					addToCronology(localStorage.getItem('watching'));
@@ -182,14 +114,16 @@ function loadvideo(video){
 		localStorage.setItem('watching', video),
 		counter=0,
 		player.loadVideoById(localStorage.getItem('watching')) ).then(function(){
-        		for(i in popRelLoc){
-                		if(localStorage.getItem('watching')==popRelLoc[i].id){
-                        		foundRelative = true;
-					printCronology(popRelLoc[i].succ, '#LPR');
-                		}
-        		}       
-        		if(!foundRelative) 
-        			$('#LPR').html('No videos was found');
+			$.get(site+"getRelatives/"+localStorage.getItem('watching'), function(data){
+				for(i in data){
+                                	if(localStorage.getItem('watching')==data[i].id){
+                                	        foundRelative = true;
+                                        	printCronology(data[i].succ, '#LPR');
+                                	}
+                        	}       
+                        	if(!foundRelative) 
+                                	$('#LPR').html('No videos was found');
+			});
 		});
 	if(!h_state)    history.pushState(localStorage.getItem('watching'), "");
 
