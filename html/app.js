@@ -15,6 +15,7 @@ const youtube = google.youtube({
 	auth: apiKey
 });
 var c = new Array();
+var popRelLoc = new Array();
 
 app.use(morgan('timy'));
 app.use(cors()); 
@@ -56,7 +57,7 @@ app.get('/listvideos/:id', function(req, res){
 	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + req.params.id + "&key=" + apiKey, function(data) {
         res.send(data);
         });
-});
+}); 
 
 /* Youtube Search */
 app.get('/ytsearch/:query', function(req, res){
@@ -120,11 +121,6 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
 	}
         var flag=false;
         var newcounter;
-        //create new object
-        /*var newvideo = {
-                "videoID": req.params.id,
-                "counter": 1
-        };*/
         if(req.params.videoId!='default'){
         if(c.length==0){
                 c.push(newvideo);
@@ -159,26 +155,50 @@ app.get('/localPop/:videoId/:timesWatched/:prevalentReason/:lastSelected', funct
         //res.send(c);
 });
 
+app.get('/getCronology', function(req,res){
+	res.send(c);
+});
+
 app.get('/globpop', function (req,res){
 	//create recommendations
 	var recommender = new Array ();
-        if(mostPopular('search'))
-		recommender.push(mostPopular('search'));
-	if(mostPopular('random'))
-		recommender.push(mostPopular('random')); 
-        if(mostPopular('related'))
-		recommender.push(mostPopular('related'));
-        if(mostPopular('video recent'))
-		recommender.push(mostPopular('video recent'));
-        if(mostPopular('fvitali'))
-		recommender.push(mostPopular('fvitali'));
-        if(mostPopular('Local Absolute'))
-		recommender.push(mostPopular('Local Absolute'));
-        if(mostPopular('Local Relative'))
-		recommender.push(mostPopular('Local Relative'));
-        /*recommender.push(mostPopular('Artist Similarity'));
-	 *recommender.push(mostPopular('Genre Similarity'));
-	*/
+        //Absolute Popularity
+	if(req.query.id=='YYYYYY'){
+		if(mostPopular('search'))
+			recommender.push(mostPopular('search'));
+		if(mostPopular('random'))
+			recommender.push(mostPopular('random')); 
+        	if(mostPopular('related'))
+			recommender.push(mostPopular('related'));
+       		if(mostPopular('video recent'))
+			recommender.push(mostPopular('video recent'));
+        	if(mostPopular('fvitali'))
+			recommender.push(mostPopular('fvitali'));
+        	if(mostPopular('Local Absolute'))
+			recommender.push(mostPopular('Local Absolute'));
+        	if(mostPopular('Local Relative'))
+			recommender.push(mostPopular('Local Relative'));
+		if(mostPopular('Artist Similarity'))
+        		recommender.push(mostPopular('Artist Similarity'));
+		if(mostPopular('Genre Similarity'))
+			recommender.push(mostPopular('Genre Similarity'));
+	}
+	//Relative Popularity
+	else{
+		var found = false;
+		for (i in popRelLoc){
+			if(req.query.id==popRelLoc[i].id){
+				found = true;
+				res.send(popRelLoc[i].succ);
+			}
+		}
+		if(!found){
+			var empty = new Array();
+			empty = [];
+			res.send(empty);
+		}
+	}
+
 	var data = new Date();
 	var gmt = data.toGMTString();
         if(recommender.length==0){
@@ -197,6 +217,74 @@ app.get('/globpop', function (req,res){
 		"recommended": recommender
 	}
 	res.send(response);
+});
+
+app.get('/addRelative/:idPred/:idSucc/:recommender', function (req, res){
+	var idPred = req.params.idPred;
+	var idSucc = req.params.idSucc;
+	var recommender = req.params.recommender;
+	var found_idPred = false ;
+	var found_idSucc = false ;
+	var date = new Date();
+	var gmtdate = date.toGMTString();
+	var indice ;
+	for(i in popRelLoc){
+		if(popRelLoc[i].id == idPred){
+			found_idPred = true ;
+			for(j in popRelLoc[i].succ){
+				if(popRelLoc[i].succ[j].videoId == idSucc){
+					found_idSucc = true ;
+					var incCount = popRelLoc[i].succ[j].timesWatched + 1 ;
+					var incElem = 	{
+										"videoId": idSucc,
+										"timesWatched": incCount,
+										"prevalentReason": recommender,
+										"lastSelected": gmtdate
+									};
+					popRelLoc[i].succ.splice(j, 1);
+					var foundVideo = false;
+					for(k in popRelLoc[i].succ){
+						if(!foundVideo && (popRelLoc[i].succ[k].timesWatched <= incCount)){
+							foundVideo = true;
+							indice = k ;
+						}
+					}
+					if(!foundVideo)
+						popRelLoc[i].succ.push(incElem);
+					else
+						popRelLoc[i].succ.splice(indice, 0, incElem);
+				}
+			}
+			if(!found_idSucc){
+				var newElem_succ =	{
+										"videoId": idSucc,
+										"timesWatched": 1,
+										"prevalentReason": recommender,
+										"lastSelected": gmtdate
+									} ;
+				popRelLoc[i].succ.splice(popRelLoc[i].succ.length, 0, newElem_succ);
+			}
+		}
+	}
+	if(!found_idPred){
+		var newElem_pred =	{
+								"id": idPred,
+								"succ": [
+											{
+												"videoId": idSucc,
+												"timesWatched": 1,
+												"prevalentReason": recommender,
+												"lastSelected": gmtdate
+											}
+										]
+							} ;
+		popRelLoc.splice(popRelLoc.length, 0, newElem_pred);
+	}
+	res.send("Request Successful");
+});
+
+app.get('/getRelatives/:id', function(req, res) {
+	res.send(popRelLoc);
 });
 
 /* Chiamata a YouTube per ottenere il genere musicale associato ad un video */
@@ -318,6 +406,7 @@ app.get('/genreSim/:gen', function(req, res){
 		}
 	});
 });
+
 
 /* Middleware handling not found error*/
 function notFound(req, res, next){
