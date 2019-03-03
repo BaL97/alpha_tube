@@ -8,7 +8,7 @@ var jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const { window } = new JSDOM();
 var $ = require('jquery')(window);
-const apiKey = 'AIzaSyA0NwqdqMCpS9JbXNaCYIyjwnrs8diZcU8';
+const apiKey = 'YOUR_API_KEY_HERE';
 const {google} = require('googleapis');
 const youtube = google.youtube({
 	version: 'v3',
