@@ -224,68 +224,63 @@ app.get('/addRelative/:idPred/:idSucc/:recommender', function (req, res){
 	var idSucc = req.params.idSucc;
 	var recommender = req.params.recommender;
 	var found_idPred = false ;
-       	var found_idSucc = false ;
-        var date = new Date();
-        var gmtdate = date.toGMTString();
+	var found_idSucc = false ;
+	var date = new Date();
+	var gmtdate = date.toGMTString();
+	var indice ;
 	for(i in popRelLoc){
-        	if(popRelLoc[i].id == idPred){
-                	found_idPred = true ;
-                        for(j in popRelLoc[i].succ){
-                        if(popRelLoc[i].succ[j].videoId == idSucc){
-                        	found_idSucc = true ;
-                                var incCount = popRelLoc[i].succ[j].timesWatched + 1 ;
-                                var incElem = {
-                                	"videoId": idSucc,
-                                        "timesWatched": incCount,
-                                        "prevalentReason": recommender,
-                                        "lastSelected": gmtdate
-                                          };
-                                                                                popRelLoc[i].succ.splice(j, 1);
-										var foundVideo = false;
-                                                                                for(k in popRelLoc[i].succ){
-
-                                                                                        if(popRelLoc[i].succ[k].timesWatched <= incCount){
-												foundVideo = true;
-                                                                                                popRelLoc[i].succ.splice(k, 0, incElem);
-                                                                                        }
-                                                                                }
-										if(!foundVideo)
-											popRelLoc[i].succ.push(incElem);
-                                                                        }
-                                                                }
-
-                                                                if(!found_idSucc){
-                                                                        var newElem_succ =      {
-                                                                                                                        "videoId": idSucc,
-                                                                                                                        "timesWatched": 1,
-                                                                                                                        "prevalentReason": recommender,
-                                                                                                                        "lastSelected": gmtdate
-                                                                                                                } ;
-
-                                                                        popRelLoc[i].succ.splice(popRelLoc[i].succ.length, 0, newElem_succ);
-                                                                }
-                                                        }
-                                                }
-
-       if(!found_idPred){
-                                                
-                                                        var newElem_pred =      {
-                                                                                                        "id": idPred,
-                                                                                                        "succ": [
-                                                                                                                                {
-                                                                                                                                        "videoId": idSucc,
-                                                                                                                                        "timesWatched": 1,
-                                                                                                                                        "prevalentReason": recommender,
-                                                                                                                                        "lastSelected": gmtdate
-                                                                                                                                        
-                                                                                                                                }       
-                                                                                                                        ]       
-                                                                                                } ;                     
-                                                                                                
-                                                        popRelLoc.splice(popRelLoc.length, 0, newElem_pred);
-                                                }  
+		if(popRelLoc[i].id == idPred){
+			found_idPred = true ;
+			for(j in popRelLoc[i].succ){
+				if(popRelLoc[i].succ[j].videoId == idSucc){
+					found_idSucc = true ;
+					var incCount = popRelLoc[i].succ[j].timesWatched + 1 ;
+					var incElem = 	{
+										"videoId": idSucc,
+										"timesWatched": incCount,
+										"prevalentReason": recommender,
+										"lastSelected": gmtdate
+									};
+					popRelLoc[i].succ.splice(j, 1);
+					var foundVideo = false;
+					for(k in popRelLoc[i].succ){
+						if(!foundVideo && (popRelLoc[i].succ[k].timesWatched <= incCount)){
+							foundVideo = true;
+							indice = k ;
+						}
+					}
+					if(!foundVideo)
+						popRelLoc[i].succ.push(incElem);
+					else
+						popRelLoc[i].succ.splice(indice, 0, incElem);
+				}
+			}
+			if(!found_idSucc){
+				var newElem_succ =	{
+										"videoId": idSucc,
+										"timesWatched": 1,
+										"prevalentReason": recommender,
+										"lastSelected": gmtdate
+									} ;
+				popRelLoc[i].succ.splice(popRelLoc[i].succ.length, 0, newElem_succ);
+			}
+		}
+	}
+	if(!found_idPred){
+		var newElem_pred =	{
+								"id": idPred,
+								"succ": [
+											{
+												"videoId": idSucc,
+												"timesWatched": 1,
+												"prevalentReason": recommender,
+												"lastSelected": gmtdate
+											}
+										]
+							} ;
+		popRelLoc.splice(popRelLoc.length, 0, newElem_pred);
+	}
 	res.send("Request Successful");
-
 });
 
 app.get('/getRelatives/:id', function(req, res) {
